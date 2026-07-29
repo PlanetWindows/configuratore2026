@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planet Windows Configurator Professional 2.3</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand-area">
+      <img src="img/logo.png" alt="Planet Windows" class="brand-logo">
+      <div class="brand-copy company-details">
+        <strong>Planet Windows SRL</strong>
+        <span>Via Buino 68, 41037 Mirandola (MO)</span>
+        <span>P.IVA: 03552820361 · Tel.: 0535-791180</span>
+        <a href="mailto:preventivi@planetwindows.it">preventivi@planetwindows.it</a>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="salva" type="button" class="header-btn"><span>▣</span> Salva</button>
+      <button id="apri" type="button" class="header-btn"><span>▤</span> Apri ultimo</button>
+      <button id="nuovo" type="button" class="header-btn"><span>＋</span> Nuovo</button>
+      <button id="pdf" type="button" class="header-btn accent"><span>▧</span> PDF</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="side-panel">
+      <div class="panel-heading">
+        <span class="heading-icon">01</span>
+        <div><h2>Dati documento</h2><p>Informazioni generali</p></div>
+      </div>
+
+      <div class="document-choice segmented">
+        <label><input type="radio" name="tipoDocumento" value="Preventivo" checked><span>Preventivo</span></label>
+        <label><input type="radio" name="tipoDocumento" value="Ordine"><span>Ordine</span></label>
+      </div>
+
+      <div class="side-fields">
+        <div class="field"><label>Cliente *</label><input id="cliente" type="text" placeholder="Nome cliente"></div>
+        <div class="field"><label>Tecnico *</label><input id="tecnico" type="text" placeholder="Tecnico / rivenditore"></div>
+        <div class="field"><label>Riferimento *</label><input id="riferimento" type="text" placeholder="Riferimento lavoro"></div>
+        <div class="field"><label>Data</label><input id="data" type="date"></div>
+      </div>
+
+      <div class="side-note">
+        <label>Note generali</label>
+        <textarea id="noteGenerali" rows="7" placeholder="Inserisci note generali..."></textarea>
+      </div>
+
+      <a class="catalog-link" href="https://drive.google.com/file/d/1XEG1DTmZHgei100Sea0s2SV1TnNQO7gL/view" target="_blank" rel="noopener">Consulta la cartella colori PVC ↗</a>
+      <p class="mandatory">* Campi obbligatori</p>
+    </aside>
+
+    <section class="content-panel">
+      <div class="content-toolbar">
+        <div>
+          <span class="eyebrow">CONFIGURAZIONE</span>
+          <h1>Serramenti</h1>
+          <p>Configura i serramenti con campi guidati e libreria visiva delle aperture.</p>
+        </div>
+        <button id="aggiungi" type="button" class="primary-btn"><span>＋</span> Nuovo serramento</button>
+      </div>
+
+      <div class="configurator-shell">
+        <aside class="items-navigator" aria-label="Elenco serramenti">
+          <div class="navigator-head">
+            <div><span class="eyebrow">COMMESSA</span><h2>Elenco serramenti</h2></div>
+            <span id="navigatorCount" class="navigator-count">0</span>
+          </div>
+          <div class="navigator-search-wrap">
+            <input id="navigatorSearch" type="search" placeholder="Cerca serramento..." aria-label="Cerca serramento">
+          </div>
+          <div id="itemsNavigatorList" class="items-navigator-list"></div>
+          <div class="navigator-summary">
+            <span>Quantità complessiva</span><strong id="navigatorQty">0</strong>
+          </div>
+        </aside>
+        <div class="detail-workspace">
+          <div class="detail-heading">
+            <div><span class="eyebrow">SCHEDA TECNICA</span><h2 id="activeItemTitle">Serramento 1</h2></div>
+            <span class="detail-hint">Seleziona un elemento dall’elenco per modificarlo</span>
+          </div>
+          <div id="lista-serramenti" class="serramenti-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="status-bar">
+    <div class="status-item"><span class="status-label">Serramenti</span><strong id="totSerramenti">0</strong></div>
+    <div class="status-item"><span class="status-label">Quantità totale</span><strong id="totQuantita">0</strong></div>
+    <div class="status-item status-grow"><span class="status-dot"></span><span id="statoPreventivo">Preventivo in compilazione</span></div>
+    <button id="pdfFooter" type="button" class="footer-pdf">Stampa / Esporta PDF</button>
+  </footer>
+
+  <script src="js/database.js"></script>
+  <script src="js/aperture-library.js"></script>
+  <script src="js/configuratore.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
