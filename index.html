@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planet Windows Configurator Professional 3.5</title>
+  <title>Planet Windows Configurator Professional 3.6</title>
   <link rel="canonical" href="https://configuratorepreventivi-ordini.planetwindows.it/">
   <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.3/dist/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.0/dist/jspdf.umd.min.js"></script>
@@ -3922,7 +3922,7 @@ function valoreCampo(card, classe) {
 
 function raccogli() {
   return {
-    versione: '3.5-pdf-diretto-riepilogo-italiano',
+    versione: '3.6-pdf-riepilogo-compatto',
     tipoDocumento: document.querySelector('input[name="tipoDocumento"]:checked')?.value || 'Preventivo',
     cliente: valore(document.getElementById('cliente')),
     tecnico: valore(document.getElementById('tecnico')),
@@ -4364,6 +4364,185 @@ async function creaSchedaEmail(serramento, index, data) {
   return new File([blob], filename, { type: 'image/jpeg' });
 }
 
+function canvasCampoRiepilogo(context, label, value, x, y, width) {
+  context.fillStyle = '#9b762e';
+  context.font = '700 11px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText(String(label).toUpperCase(), x, y);
+  context.fillStyle = '#231f20';
+  context.font = '600 15px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText(canvasTestoRidotto(context, String(value || '').trim() || '-', width), x, y + 20);
+  context.fillStyle = '#eee8df';
+  context.fillRect(x, y + 31, width, 1);
+}
+
+async function creaPaginaRiepilogoEmail(data, serramenti, indiceIniziale, numeroPagina, totalePagine) {
+  const logoSrc = document.querySelector('.brand-logo')?.src || '';
+  const [logo, ...immagini] = await Promise.all([
+    caricaImmagineEmail(logoSrc),
+    ...serramenti.map(serramento => serramento.immagineApertura
+      ? caricaImmagineEmail(serramento.immagineApertura)
+      : Promise.resolve(null))
+  ]);
+  const canvas = document.createElement('canvas');
+  canvas.width = 1240;
+  canvas.height = 1754;
+  const context = canvas.getContext('2d');
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = 'high';
+  context.fillStyle = '#ffffff';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  canvasImmagineContain(context, logo, 55, 48, 500, 92);
+  context.textAlign = 'right';
+  context.fillStyle = '#231f20';
+  context.font = '700 22px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText('Planet Windows SRL', 1185, 68);
+  context.fillStyle = '#787174';
+  context.font = '500 14px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText('Via Buino 68, 41037 Mirandola (MO)', 1185, 94);
+  context.fillText('P.IVA 03552820361  -  Tel. 0535 791180', 1185, 117);
+  context.fillStyle = '#9b762e';
+  context.font = '700 16px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText('preventivi@planetwindows.it', 1185, 143);
+  context.textAlign = 'left';
+  context.fillStyle = '#d4ae62';
+  context.fillRect(55, 166, 1130, 5);
+
+  context.fillStyle = '#9b762e';
+  context.font = '700 14px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText('CONFIGURATORE PROFESSIONALE', 55, 207);
+  context.fillStyle = '#231f20';
+  context.font = '700 30px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText(String(data.tipoDocumento || 'Richiesta').toUpperCase(), 55, 239);
+  context.textAlign = 'right';
+  context.fillStyle = '#787174';
+  context.font = '600 14px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText(`PAGINA ${numeroPagina} / ${totalePagine}`, 1185, 232);
+  context.textAlign = 'left';
+
+  canvasRettangoloArrotondato(context, 55, 258, 1130, 94, 14);
+  context.fillStyle = '#faf8f4';
+  context.fill();
+  context.strokeStyle = '#e6dfd4';
+  context.lineWidth = 1;
+  context.stroke();
+  const meta = [
+    ['Cliente', data.cliente],
+    ['Tecnico / Rivenditore', data.tecnico],
+    ['Riferimento', data.riferimento],
+    ['Data', formatoDataPdf(data.data)]
+  ];
+  meta.forEach(([label, value], index) => {
+    const x = 77 + index * 275;
+    context.fillStyle = '#9b762e';
+    context.font = '700 11px "Century Gothic", Arial, Helvetica, sans-serif';
+    context.fillText(label.toUpperCase(), x, 287);
+    context.fillStyle = '#231f20';
+    context.font = '700 17px "Century Gothic", Arial, Helvetica, sans-serif';
+    context.fillText(canvasTestoRidotto(context, value, 242), x, 315);
+  });
+  context.fillStyle = '#787174';
+  context.font = '500 13px "Century Gothic", Arial, Helvetica, sans-serif';
+  const noteGenerali = String(data.noteGenerali || '').trim();
+  context.fillText(canvasTestoRidotto(context, noteGenerali ? `Note generali: ${noteGenerali}` : 'Note generali: -', 1086), 77, 340);
+
+  const rowX = 55;
+  const rowWidth = 1130;
+  const rowHeight = 320;
+  const rowGap = 14;
+  const startY = 374;
+  serramenti.forEach((serramento, index) => {
+    const y = startY + index * (rowHeight + rowGap);
+    canvasRettangoloArrotondato(context, rowX, y, rowWidth, rowHeight, 15);
+    context.fillStyle = '#ffffff';
+    context.fill();
+    context.strokeStyle = '#d9d1c5';
+    context.lineWidth = 1.5;
+    context.stroke();
+
+    context.save();
+    canvasRettangoloArrotondato(context, rowX, y, rowWidth, rowHeight, 15);
+    context.clip();
+    context.fillStyle = '#faf8f4';
+    context.fillRect(rowX, y, rowWidth, 47);
+    context.fillStyle = '#d4ae62';
+    context.fillRect(rowX, y, 7, 47);
+    context.restore();
+
+    const numeroRiga = indiceIniziale + index + 1;
+    context.fillStyle = '#231f20';
+    context.font = '700 18px "Century Gothic", Arial, Helvetica, sans-serif';
+    context.fillText(`RIGA ${String(numeroRiga).padStart(2, '0')}  -  ${serramento.tipologia || 'Serramento'}`, 76, y + 30);
+    context.textAlign = 'right';
+    context.fillStyle = '#29855c';
+    context.font = '700 13px "Century Gothic", Arial, Helvetica, sans-serif';
+    context.fillText(`COMPLETO  -  Q.TA ${serramento.quantita || '1'}`, 1160, y + 29);
+    context.textAlign = 'left';
+
+    canvasRettangoloArrotondato(context, 76, y + 64, 185, 205, 12);
+    context.fillStyle = '#fbfaf8';
+    context.fill();
+    context.strokeStyle = '#e6dfd4';
+    context.stroke();
+    const image = immagini[index];
+    if (image) {
+      canvasImmagineContain(context, image, 90, y + 77, 157, 150);
+    } else {
+      context.textAlign = 'center';
+      context.fillStyle = '#d4ae62';
+      context.font = '700 36px "Century Gothic", Arial, Helvetica, sans-serif';
+      context.fillText('▣', 168, y + 150);
+      context.textAlign = 'left';
+    }
+    context.textAlign = 'center';
+    context.fillStyle = '#9b762e';
+    context.font = '700 10px "Century Gothic", Arial, Helvetica, sans-serif';
+    context.fillText('MODELLO APERTURA', 168, y + 244);
+    context.fillStyle = '#231f20';
+    context.font = '700 14px "Century Gothic", Arial, Helvetica, sans-serif';
+    context.fillText(canvasTestoRidotto(context, serramento.apertura || serramento.tipologia || '-', 155), 168, y + 263);
+    context.textAlign = 'left';
+
+    const dimensioni = serramento.larghezza && serramento.altezza
+      ? `${serramento.larghezza} x ${serramento.altezza} mm`
+      : '-';
+    const fields = [
+      ['Profilo madre', serramento.madre],
+      ['Serie', serramento.serie],
+      ['Tipologia', serramento.tipologia],
+      ['Profilo telaio / doga', serramento.telaio],
+      ['Apertura', serramento.apertura],
+      ['Dimensioni / Quantita', `${dimensioni}  -  Q.ta ${serramento.quantita || '1'}`],
+      ['H traverso', serramento.hTrav ? `${serramento.hTrav} mm` : '-'],
+      ['Rifilo aletta', serramento.rifiloAletta],
+      ['Soglia', serramento.soglia],
+      ['Colore interno', serramento.coloreInt],
+      ['Colore esterno', serramento.coloreEst],
+      ['Vetro', serramento.vetro],
+      ['Ferramenta', serramento.ferramenta]
+    ];
+    fields.forEach(([label, value], fieldIndex) => {
+      const column = fieldIndex % 3;
+      const line = Math.floor(fieldIndex / 3);
+      canvasCampoRiepilogo(context, label, value, 292 + column * 291, y + 76 + line * 46, 270);
+    });
+    canvasCampoRiepilogo(context, 'Note', serramento.note, 583, y + 260, 561);
+  });
+
+  context.fillStyle = '#d4ae62';
+  context.fillRect(55, 1710, 1130, 3);
+  context.fillStyle = '#787174';
+  context.font = '500 12px "Century Gothic", Arial, Helvetica, sans-serif';
+  context.fillText('Planet Windows SRL  -  Configurazione generata automaticamente', 55, 1737);
+  context.textAlign = 'right';
+  context.fillText(`${data.serramenti.length} righe complessive`, 1185, 1737);
+  context.textAlign = 'left';
+
+  const blob = await canvasJpegBlob(canvas);
+  const filename = `Pagina_${String(numeroPagina).padStart(2, '0')}_Riepilogo.jpg`;
+  return new File([blob], filename, { type: 'image/jpeg' });
+}
+
 function fileDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -4380,7 +4559,7 @@ async function creaPdfLeggeroEmail(data, schede) {
   if (!schede.length) throw new Error('Non ci sono schede da inserire nel PDF.');
 
   const pdf = new window.jspdf.jsPDF({
-    orientation: 'landscape',
+    orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
     compress: true,
@@ -4388,9 +4567,9 @@ async function creaPdfLeggeroEmail(data, schede) {
   });
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-  const availableWidth = pageWidth - 20;
-  const availableHeight = pageHeight - 20;
-  const cardRatio = 1400 / 760;
+  const availableWidth = pageWidth - 10;
+  const availableHeight = pageHeight - 10;
+  const cardRatio = 1240 / 1754;
   let drawWidth = availableWidth;
   let drawHeight = drawWidth / cardRatio;
   if (drawHeight > availableHeight) {
@@ -4401,7 +4580,7 @@ async function creaPdfLeggeroEmail(data, schede) {
   const y = (pageHeight - drawHeight) / 2;
 
   for (let index = 0; index < schede.length; index += 1) {
-    if (index > 0) pdf.addPage('a4', 'landscape');
+    if (index > 0) pdf.addPage('a4', 'portrait');
     const dataUrl = await fileDataUrl(schede[index].file);
     pdf.addImage(dataUrl, 'JPEG', x, y, drawWidth, drawHeight, undefined, 'MEDIUM');
   }
@@ -4503,13 +4682,17 @@ async function inviaRichiesta() {
   try {
     const schede = [];
     let dimensioneSchede = 0;
-    for (let index = 0; index < data.serramenti.length; index += 1) {
-      const file = await creaSchedaEmail(data.serramenti[index], index, data);
+    const righePerPagina = 4;
+    const totalePagine = Math.ceil(data.serramenti.length / righePerPagina);
+    for (let pagina = 0; pagina < totalePagine; pagina += 1) {
+      const indiceIniziale = pagina * righePerPagina;
+      const righePagina = data.serramenti.slice(indiceIniziale, indiceIniziale + righePerPagina);
+      const file = await creaPaginaRiepilogoEmail(data, righePagina, indiceIniziale, pagina + 1, totalePagine);
       dimensioneSchede += file.size;
       if (dimensioneSchede > 20 * 1024 * 1024) {
-        throw new Error('Le schede da convertire sono troppo numerose. Riduci il numero di righe e riprova.');
+        throw new Error('Il riepilogo da convertire è troppo grande. Riduci il numero di righe e riprova.');
       }
-      schede.push({ index, file });
+      schede.push({ index: pagina, file });
     }
     const pdfLeggero = await creaPdfLeggeroEmail(data, schede);
 
