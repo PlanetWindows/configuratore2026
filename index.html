@@ -172,7 +172,7 @@ img{max-width:100%;height:auto}
         <textarea id="noteGenerali" rows="7" placeholder="Inserisci note generali..."></textarea>
       </div>
 
-      <a class="catalog-link" href="https://drive.google.com/file/d/1XEG1DTmZHgei100Sea0s2SV1TnNQO7gL/view" target="_blank" rel="noopener">Consulta la cartella colori PVC ↗</a>
+      <a id="catalogLink" class="catalog-link" href="Colori-PVC.pdf" target="_blank" rel="noopener" hidden>Consulta i colori PVC ↗</a>
       <p class="mandatory">* Campi obbligatori</p>
     </aside>
 
@@ -3819,6 +3819,27 @@ const navigatorList = document.getElementById('itemsNavigatorList');
 const navigatorSearch = document.getElementById('navigatorSearch');
 let activeCard = null;
 
+const catalogLink = document.getElementById('catalogLink');
+const cataloghiColori = {
+  PVC: { href: 'Colori-PVC.pdf', label: 'Consulta i colori PVC ↗' },
+  ALLUMINIO: { href: 'Colori-Alluminio.pdf', label: 'Consulta i colori Alluminio ↗' },
+  REVERII: { href: 'Colori-Reverii.pdf', label: 'Consulta i colori Reverii ↗' }
+};
+
+function aggiornaCatalogoColori() {
+  if (!catalogLink) return;
+  const materiale = activeCard?.querySelector('.madre')?.value || '';
+  const catalogo = cataloghiColori[materiale];
+  if (!catalogo) {
+    catalogLink.hidden = true;
+    catalogLink.removeAttribute('href');
+    return;
+  }
+  catalogLink.href = catalogo.href;
+  catalogLink.textContent = catalogo.label;
+  catalogLink.hidden = false;
+}
+
 function cardLabel(card, index) {
   const tipologia = Configuratore.valoreSelect(card.querySelector('.tipologia')) || 'Tipologia non selezionata';
   const serie = Configuratore.valoreSelect(card.querySelector('.serie')) || 'Serie non selezionata';
@@ -3837,6 +3858,7 @@ function selectCard(card) {
   const index = cards.indexOf(card);
   document.getElementById('activeItemTitle').textContent = index >= 0 ? `Serramento ${index + 1}` : 'Nessun serramento';
   renderNavigator();
+  aggiornaCatalogoColori();
 }
 
 function renderNavigator() {
@@ -3866,6 +3888,10 @@ function renderNavigator() {
 }
 
 navigatorSearch?.addEventListener('input', renderNavigator);
+
+document.addEventListener('change', (event) => {
+  if (event.target?.classList?.contains('madre')) aggiornaCatalogoColori();
+});
 
 function toast(message) {
   const old = document.querySelector('.toast');
