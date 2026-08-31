@@ -7171,5 +7171,275 @@ if (confirmationParams.get('inviato') === '1') {
 })();
 </script>
 
+
+<script id="pw-word-email-v1">
+(function(){
+  function cleanName(v){
+    return String(v || '').trim()
+      .replace(/[^a-zA-Z0-9À-ÿ_-]+/g,'_')
+      .replace(/^_+|_+$/g,'');
+  }
+
+  function wordFilename(data){
+    return ['Planet_Windows', data.tipoDocumento, cleanName(data.cliente), cleanName(data.riferimento)]
+      .filter(Boolean).join('_') + '.docx';
+  }
+
+  function dateIt(v){
+    if (!v) return new Date().toLocaleDateString('it-IT');
+    const p=String(v).split('-');
+    return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : v;
+  }
+
+  async function imgBytes(src){
+    if(!src) return null;
+    try{
+      if(src.startsWith('data:')){
+        const b64=src.split(',')[1]||'';
+        const bin=atob(b64);
+        const out=new Uint8Array(bin.length);
+        for(let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
+        return out;
+      }
+      const r=await fetch(src,{cache:'no-store'});
+      if(!r.ok) return null;
+      return new Uint8Array(await r.arrayBuffer());
+    }catch(e){ return null; }
+  }
+
+  async function buildWordBlob(data){
+    if(!window.docx) throw new Error('Libreria Word non disponibile. Ricarica la pagina.');
+
+    const {
+      Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
+      WidthType,BorderStyle,AlignmentType,ImageRun,PageBreak,VerticalAlign
+    }=docx;
+
+    const thin={style:BorderStyle.SINGLE,size:4,color:'DDD5C9'};
+    const none={style:BorderStyle.NONE,size:0,color:'FFFFFF'};
+
+    const tc=(text,opts={})=>new TableCell({
+      width:opts.width?{size:opts.width,type:WidthType.PERCENTAGE}:undefined,
+      verticalAlign:VerticalAlign.CENTER,
+      shading:opts.shading?{fill:opts.shading}:undefined,
+      margins:{top:90,bottom:90,left:110,right:110},
+      children:[new Paragraph({
+        spacing:{before:0,after:0,line:260},
+        children:[new TextRun({
+          text:String(text??''),
+          bold:!!opts.bold,
+          size:opts.size||19,
+          color:opts.color||'231F20'
+        })]
+      })]
+    });
+
+    const children=[];
+    const logo=await imgBytes(document.querySelector('.brand-logo')?.src||'');
+
+    const leftHeader = logo
+      ? [new Paragraph({children:[new ImageRun({data:logo,transformation:{width:250,height:48}})]})]
+      : [new Paragraph({children:[new TextRun({text:'PLANET WINDOWS',bold:true,size:34})]})];
+
+    children.push(new Table({
+      width:{size:100,type:WidthType.PERCENTAGE},
+      borders:{top:none,bottom:{style:BorderStyle.SINGLE,size:14,color:'D4AE62'},left:none,right:none,insideHorizontal:none,insideVertical:none},
+      rows:[new TableRow({children:[
+        new TableCell({width:{size:55,type:WidthType.PERCENTAGE},children:leftHeader}),
+        new TableCell({width:{size:45,type:WidthType.PERCENTAGE},children:[
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'Planet Windows SRL',bold:true,size:23})]}),
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'Via Buino 68, 41037 Mirandola (MO)',size:16,color:'777777'})]}),
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'P.IVA 03552820361 · Tel. 0535-791180',size:16,color:'777777'})]}),
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'preventivi@planetwindows.it',bold:true,size:16,color:'9B762E'})]})
+        ]})
+      ]})]
+    }));
+
+    children.push(new Paragraph({spacing:{before:180,after:50},children:[
+      new TextRun({text:'CONFIGURATORE PROFESSIONALE',bold:true,size:15,color:'9B762E'})
+    ]}));
+    children.push(new Paragraph({spacing:{after:150},children:[
+      new TextRun({text:String(data.tipoDocumento||'Preventivo').toUpperCase(),bold:true,size:31})
+    ]}));
+
+    children.push(new Table({
+      width:{size:100,type:WidthType.PERCENTAGE},
+      borders:{top:thin,bottom:thin,left:thin,right:thin,insideHorizontal:thin,insideVertical:thin},
+      rows:[
+        new TableRow({children:[
+          tc('CLIENTE',{bold:true,size:14,color:'88785E',shading:'F8F5EF'}),
+          tc('TECNICO / RIVENDITORE',{bold:true,size:14,color:'88785E',shading:'F8F5EF'}),
+          tc('RIFERIMENTO',{bold:true,size:14,color:'88785E',shading:'F8F5EF'}),
+          tc('DATA',{bold:true,size:14,color:'88785E',shading:'F8F5EF'})
+        ]}),
+        new TableRow({children:[
+          tc(data.cliente||''),tc(data.tecnico||''),tc(data.riferimento||''),tc(dateIt(data.data))
+        ]})
+      ]
+    }));
+
+    if(String(data.noteGenerali||'').trim()){
+      children.push(new Paragraph({spacing:{before:140,after:30},children:[
+        new TextRun({text:'NOTE GENERALI',bold:true,size:15,color:'9B762E'})
+      ]}));
+      children.push(new Paragraph({spacing:{after:120},children:[
+        new TextRun({text:String(data.noteGenerali),size:19})
+      ]}));
+    }
+
+    for(let i=0;i<data.serramenti.length;i++){
+      const x=data.serramenti[i];
+      if(i>0) children.push(new Paragraph({children:[new PageBreak()]}));
+      else children.push(new Paragraph({spacing:{before:150,after:0},children:[]}));
+
+      children.push(new Paragraph({spacing:{before:50,after:90},children:[
+        new TextRun({text:`RIGA ${String(i+1).padStart(2,'0')}  ·  `,bold:true,size:21,color:'9B762E'}),
+        new TextRun({text:String(x.tipologia||'Serramento'),bold:true,size:23})
+      ]}));
+
+      const fields=[
+        ['Profilo madre',x.madre],['Serie',x.serie],['Tipologia',x.tipologia],
+        ['Profilo telaio / doga',x.telaio],['Profondità cassonetto',x.anta],
+        ['Apertura',x.apertura],['L (mm)',x.larghezza],['H (mm)',x.altezza],
+        ['Quantità',x.quantita],['H traverso (mm)',x.hTrav],
+        ['Rifilo aletta',x.rifiloAletta],['Misura rifilo (mm)',x.rifiloMisura],
+        ['Soglia',x.soglia],['Colore interno',x.coloreInt],['Colore esterno',x.coloreEst],
+        ['Vetro',x.vetro],['Ferramenta',x.ferramenta],['Note',x.note]
+      ].filter(([,v])=>String(v||'').trim());
+
+      const detailRows=fields.map(([lab,val])=>new TableRow({
+        cantSplit:true,
+        children:[
+          tc(lab.toUpperCase(),{width:34,bold:true,size:14,color:'88785E',shading:'FAF8F4'}),
+          tc(val,{width:66,size:19})
+        ]
+      }));
+
+      const details=new Table({
+        width:{size:100,type:WidthType.PERCENTAGE},
+        borders:{top:thin,bottom:thin,left:thin,right:thin,insideHorizontal:thin,insideVertical:thin},
+        rows:detailRows
+      });
+
+      const bytes=await imgBytes(x.immagineApertura);
+      const preview=[];
+      if(bytes){
+        preview.push(new Paragraph({
+          alignment:AlignmentType.CENTER,spacing:{after:60},
+          children:[new ImageRun({data:bytes,transformation:{width:145,height:145}})]
+        }));
+      }
+      preview.push(new Paragraph({
+        alignment:AlignmentType.CENTER,
+        children:[new TextRun({text:String(x.apertura||'Apertura'),bold:true,size:16,color:'6F665B'})]
+      }));
+
+      children.push(new Table({
+        width:{size:100,type:WidthType.PERCENTAGE},
+        borders:{top:thin,bottom:thin,left:thin,right:thin,insideHorizontal:none,insideVertical:thin},
+        rows:[new TableRow({children:[
+          new TableCell({
+            width:{size:25,type:WidthType.PERCENTAGE},
+            verticalAlign:VerticalAlign.CENTER,
+            margins:{top:120,bottom:120,left:120,right:120},
+            children:preview
+          }),
+          new TableCell({
+            width:{size:75,type:WidthType.PERCENTAGE},
+            margins:{top:0,bottom:0,left:0,right:0},
+            children:[details]
+          })
+        ]})]
+      }));
+    }
+
+    const doc=new Document({
+      creator:'Planet Windows SRL',
+      title:`${data.tipoDocumento||'Preventivo'} - ${data.cliente||''}`,
+      sections:[{properties:{page:{margin:{top:720,right:720,bottom:720,left:720}}},children}]
+    });
+
+    return Packer.toBlob(doc);
+  }
+
+  async function sendWordRequest(){
+    const data=raccogli();
+    const errors=erroriRichiesta(data);
+    if(errors.length){
+      window.alert(`Completa i seguenti dati prima dell’invio:\n\n• ${errors.join('\n• ')}`);
+      return;
+    }
+
+    if(!window.confirm(`Inviare la richiesta a ${REQUEST_EMAIL} con allegato Word editabile?`)) return;
+
+    const target=`planetWindowsInvioWord_${Date.now()}`;
+    const win=window.open('',target);
+    if(win){
+      win.document.title='Invio richiesta Planet Windows';
+      win.document.body.innerHTML='<p style="font-family:Arial,sans-serif;padding:30px">Preparazione e invio del file Word in corso…</p>';
+    }
+
+    const qty=data.serramenti.reduce((t,x)=>{
+      const q=parseInt(x.quantita||'0',10);
+      return t+(Number.isFinite(q)?q:0);
+    },0);
+
+    impostaStatoInvio(true);
+    try{
+      const blob=await buildWordBlob(data);
+      const filename=wordFilename(data);
+
+      const payload=new FormData();
+      payload.append('_subject',`${data.tipoDocumento} Planet Windows - ${data.cliente} - ${data.riferimento}`);
+      payload.append('_template','table');
+      payload.append('_honey','');
+      payload.append('_url',window.location.href.split('#')[0]);
+
+      const next=new URL(window.location.href);
+      next.hash='';
+      next.searchParams.set('inviato','1');
+      payload.append('_next',next.href);
+
+      const summary=[
+        data.tipoDocumento.toUpperCase(),
+        `Cliente: ${data.cliente}`,
+        `Tecnico / Rivenditore: ${data.tecnico}`,
+        `Riferimento: ${data.riferimento}`,
+        `Data: ${dateIt(data.data)}`,
+        `Righe: ${data.serramenti.length}`,
+        `Quantità complessiva: ${qty}`,
+        String(data.noteGenerali||'').trim()?`Note generali: ${data.noteGenerali.trim()}`:'',
+        'Dettagli tecnici, disegni e note nel file Word editabile allegato'
+      ].filter(Boolean).join('  •  ');
+
+      payload.append('Riepilogo',summary);
+      payload.append('Allegato',blob,filename);
+
+      localStorage.setItem('planetWindowsPreventivo',JSON.stringify(data));
+      inviaModuloFormSubmit(payload,win?target:'_self');
+      toast('Richiesta preparata con allegato Word.');
+    }catch(e){
+      console.error(e);
+      if(win&&!win.closed) win.close();
+      window.alert(`Non è stato possibile inviare la richiesta Word.\n\n${e.message||'Errore sconosciuto'}`);
+    }finally{
+      impostaStatoInvio(false);
+    }
+  }
+
+  /* Rimuove i vecchi listener PDF dai due pulsanti INVIA clonandoli,
+     quindi collega soltanto il nuovo invio Word. */
+  ['invia','inviaFooter'].forEach(id=>{
+    const old=document.getElementById(id);
+    if(!old) return;
+    const clone=old.cloneNode(true);
+    old.parentNode.replaceChild(clone,old);
+    clone.addEventListener('click',sendWordRequest);
+  });
+
+  window.creaWordAllegatoPlanetWindows=buildWordBlob;
+})();
+</script>
+
 </body>
 </html>
