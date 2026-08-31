@@ -3517,10 +3517,18 @@ async function applicaColoreAnteprima(card) {
         const sat = max === 0 ? 0 : (max - min) / max;
         const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 
-        const maxSat = isPVCPreview ? 0.18 : 0.13;
-        const minLum = isPVCPreview ? 0.12 : 0.24;
-        const maxLum = isPVCPreview ? 0.965 : 0.70;
-        if (sat > maxSat || lum < minLum || lum > maxLum) continue;
+        // Per il PVC il profilo originale delle anteprime è spesso beige/oro,
+        // quindi non basta cercare solo pixel quasi neutri. Consideriamo sia i
+        // profili chiari/neutri sia i toni caldi del telaio, ma escludiamo il
+        // vetro (tipicamente azzurro/blu) e le zone molto scure.
+        if (isPVCPreview) {
+          const neutralProfile = sat <= 0.22 && lum >= 0.18 && lum <= 0.97;
+          const warmProfile = sat <= 0.60 && lum >= 0.20 && lum <= 0.95
+            && r >= g * 0.92 && g >= b * 0.88 && r > b * 1.05;
+          if (!(neutralProfile || warmProfile)) continue;
+        } else {
+          if (sat > 0.13 || lum < 0.24 || lum > 0.70) continue;
+        }
 
         // Nelle immagini PVC il simbolo/circolo centrale indica il verso di
         // apertura: NON fa parte dell'infisso e deve mantenere il colore originale.
