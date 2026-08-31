@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Planet Windows Configurator Professional 3.6</title>
+  <!-- PATCH 2026-08-31: colori affiancati + anteprima PVC -->
   <link rel="canonical" href="https://configuratorepreventivi-ordini.planetwindows.it/">
   <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.3/dist/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.0/dist/jspdf.umd.min.js"></script>
@@ -28,7 +29,7 @@ button{cursor:pointer}
 .side-fields{display:grid;gap:13px}.field{min-width:0}.field label,.side-note label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.55px;color:var(--ink-2);margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #d9d4cd;background:#fff;color:var(--ink);border-radius:10px;padding:10px 11px;min-height:42px;font-size:12px;outline:none;transition:.16s ease}input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,174,98,.16)}select:disabled{background:#f1f0ed;color:#9a9691}.side-note{margin-top:15px}.side-note textarea{resize:vertical;min-height:132px}.catalog-link{display:block;margin-top:16px;color:var(--gold-dark);font-size:11px;font-weight:700;text-decoration:none}.mandatory{margin-top:10px;font-size:10px;color:var(--muted)}
 .content-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:18px}.eyebrow{font-size:10px;color:var(--gold-dark);font-weight:700;letter-spacing:1px}.content-toolbar h1{font-size:28px;margin-top:4px}.content-toolbar p{font-size:12px;color:var(--muted);margin-top:5px}.primary-btn{border:0;background:var(--ink);color:#fff;padding:13px 18px;border-radius:12px;font-size:12px;font-weight:700;box-shadow:0 8px 20px rgba(35,31,32,.14);transition:.18s ease}.primary-btn span{color:var(--gold);font-size:17px}.primary-btn:hover{transform:translateY(-1px)}
 .serramenti-list{display:grid;gap:16px}.serramento{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#fff;box-shadow:0 6px 18px rgba(35,31,32,.055);transition:.18s ease}.serramento:hover{border-color:#d1c6b5;box-shadow:0 9px 24px rgba(35,31,32,.085)}.serramento-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:linear-gradient(90deg,#faf8f4,#fff);border-bottom:1px solid var(--line);position:relative}.serramento-header:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold)}.serramento-header h3{font-size:14px;padding-left:8px}.serramento-actions{display:flex;gap:8px}.serramento-actions button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 11px;font-size:10px;font-weight:700;transition:.15s ease}.duplicate{color:var(--gold-dark)}.delete{color:var(--danger)}.serramento-actions button:hover{transform:translateY(-1px);box-shadow:0 5px 12px rgba(35,31,32,.08)}
-.serramento-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;padding:16px}.serramento-grid .wide{grid-column:span 2}.serramento-grid .full{grid-column:1/-1}.glass-field{grid-column:span 3!important}.serramento-grid .compact{max-width:150px}.notes-field textarea{min-height:88px;resize:vertical}.custom-value{margin-top:6px;border-color:var(--gold);background:#fffdf8;animation:customFieldIn .15s ease-out}.custom-value[hidden]{display:none!important}.empty-note{font-size:10px;color:var(--danger);margin-top:4px}select.auto-filled{background:#fffaf0;border-color:var(--gold);font-weight:700}.rifilo-pair{display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:7px}.rifilo-pair input{min-width:0}.rifilo-pair select{min-width:0}.rifilo-field{grid-column:1 / span 2!important}.soglia-field{grid-column:span 2!important}.colori-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.colori-row .field{min-width:0}
+.serramento-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;padding:16px}.serramento-grid .wide{grid-column:span 2}.serramento-grid .full{grid-column:1/-1}.glass-field{grid-column:span 3!important}.serramento-grid .compact{max-width:150px}.notes-field textarea{min-height:88px;resize:vertical}.custom-value{margin-top:6px;border-color:var(--gold);background:#fffdf8;animation:customFieldIn .15s ease-out}.custom-value[hidden]{display:none!important}.empty-note{font-size:10px;color:var(--danger);margin-top:4px}select.auto-filled{background:#fffaf0;border-color:var(--gold);font-weight:700}.rifilo-pair{display:grid;grid-template-columns:minmax(0,1fr) 72px;gap:7px}.rifilo-pair input{min-width:0}.rifilo-pair select{min-width:0}.rifilo-field{grid-column:1 / span 2!important}.soglia-field{grid-column:span 2!important}.colori-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.colori-row .field{min-width:0;grid-column:auto!important}
 @keyframes customFieldIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
 .status-bar{position:fixed;left:20px;right:20px;bottom:14px;min-height:66px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 36px rgba(35,31,32,.14);display:flex;align-items:center;padding:10px 14px;z-index:60}.status-item{display:flex;align-items:center;gap:10px;padding:0 20px;border-right:1px solid var(--line);min-height:42px}.status-label{font-size:10px;text-transform:uppercase;letter-spacing:.45px;color:var(--muted)}.status-item strong{font-size:20px}.status-grow{flex:1;border-right:0;font-size:12px;color:var(--muted)}.status-dot{width:9px;height:9px;background:var(--gold);border-radius:50%}.footer-actions{display:flex;gap:8px}.footer-pdf{border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:11px;padding:13px 24px;font-size:11px;font-weight:700}.footer-pdf.secondary{background:#fff;color:var(--ink);border-color:var(--line)}.footer-pdf.secondary:hover{border-color:var(--gold)}.toast{position:fixed;right:28px;bottom:94px;background:var(--ink);color:#fff;padding:13px 17px;border-radius:11px;font-size:11px;z-index:100;box-shadow:0 10px 24px rgba(35,31,32,.2)}
 @media(max-width:1180px){.workspace{grid-template-columns:260px minmax(0,1fr)}.brand-copy{display:none}.brand-logo{max-width:320px}.serramento-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.glass-field{grid-column:span 2!important}}
@@ -41,7 +42,7 @@ button{cursor:pointer}
 .serramento-title-wrap{display:flex;align-items:center;gap:10px}.card-status{font-size:9px;font-weight:700;padding:5px 8px;border-radius:999px;background:#f3ece3;color:var(--gold-dark)}.card-status.complete{background:#e4f4ec;color:var(--success)}
 .opening-visual{display:flex;align-items:center;gap:15px;border:1px solid var(--line);border-radius:13px;padding:11px;background:linear-gradient(135deg,#fff,#fbfaf7)}.opening-preview-box{width:94px;height:94px;flex:0 0 94px;border:1px solid var(--line);border-radius:10px;background:#fff;display:grid;place-items:center;overflow:hidden}.opening-preview-box img{width:100%;height:100%;object-fit:contain}.opening-placeholder{font-size:30px;color:#c7bda9}.opening-visual-copy{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}.opening-visual-label{font-size:9px;font-weight:700;letter-spacing:.7px;color:var(--gold-dark)}.opening-visual-title{font-size:13px;line-height:1.3}.opening-library-btn{border:1px solid var(--gold);background:#fffaf0;color:var(--gold-dark);border-radius:8px;padding:7px 10px;font-size:10px;font-weight:700;margin-top:2px}.opening-library-btn:hover{background:var(--gold-soft)}
 .opening-modal{position:fixed;inset:0;background:rgba(35,31,32,.58);backdrop-filter:blur(6px);z-index:200;display:grid;place-items:center;padding:22px}.opening-modal[hidden]{display:none}.opening-dialog{width:min(1050px,100%);max-height:min(820px,92vh);overflow:hidden;background:#fff;border-radius:20px;box-shadow:0 28px 80px rgba(0,0,0,.28);display:flex;flex-direction:column}.opening-dialog-head{display:flex;align-items:center;justify-content:space-between;padding:22px 24px 15px;border-bottom:1px solid var(--line)}.opening-dialog-head h2{font-size:24px;margin-top:4px}.opening-close{width:42px;height:42px;border:1px solid var(--line);background:#fff;border-radius:11px;font-size:25px;color:var(--ink)}.opening-search-wrap{padding:14px 24px 4px}.opening-search{font-size:13px}.opening-gallery{padding:18px 24px 26px;overflow:auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}.opening-choice{border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px;min-height:182px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;color:var(--ink);font-size:10px;font-weight:700;line-height:1.3;transition:.16s ease}.opening-choice:hover,.opening-choice.selected{border-color:var(--gold);box-shadow:0 8px 22px rgba(35,31,32,.1);transform:translateY(-2px)}.opening-choice.selected{background:#fffaf0}.opening-choice img{width:100%;height:135px;object-fit:contain}.opening-choice-placeholder{height:135px;width:100%;display:grid;place-items:center;background:#f7f5f1;border-radius:8px;font-size:36px;color:#c7bda9}.opening-choice[hidden]{display:none}
-@media(max-width:900px){.opening-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:560px){.opening-visual{align-items:flex-start}.opening-preview-box{width:76px;height:76px;flex-basis:76px}.opening-gallery{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px}.opening-dialog-head,.opening-search-wrap{padding-left:14px;padding-right:14px}}
+@media(max-width:900px){.opening-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:620px){.colori-row{grid-template-columns:1fr}}@media(max-width:560px){.opening-visual{align-items:flex-start}.opening-preview-box{width:76px;height:76px;flex-basis:76px}.opening-gallery{grid-template-columns:repeat(2,minmax(0,1fr));padding:12px}.opening-dialog-head,.opening-search-wrap{padding-left:14px;padding-right:14px}}
 @media print{.opening-library-btn,.opening-modal{display:none!important}.opening-visual{break-inside:avoid}}
 .opening-filter-info{margin:4px 0 0;color:#727272;font-size:13px}.opening-choice small{display:block;margin-top:4px;color:#8a8a8a;font-size:10px;line-height:1.25}.opening-choice img{width:100%;height:118px;object-fit:contain;background:#fff;border-radius:8px}.opening-empty{padding:50px 20px;text-align:center;color:#777}.opening-gallery{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));max-height:62vh;overflow:auto}.opening-choice{min-height:185px}
 
@@ -3492,9 +3493,11 @@ async function applicaColoreAnteprima(card) {
       ];
     }
 
-    // Le immagini di apertura possono avere un telaio grigio oppure molto chiaro (PVC).
-    // Coloriamo i pixel neutri del serramento, compresi quelli chiari:
-    // vetro, sfondo bianco, maniglie e testi restano invariati.
+    // Le immagini PVC hanno spesso il profilo molto più chiaro rispetto ad
+    // Alluminio/Reverii. Usiamo quindi una soglia dedicata al PVC, continuando
+    // a lasciare invariati vetro, sfondo trasparente, maniglie e testi.
+    const materiale = valoreSelect(card.querySelector(".madre"));
+    const isPVCPreview = materiale === "PVC";
     const maxY = Math.floor(canvas.height * 0.82);
     for (let y = 0; y < maxY; y++) {
       for (let x = 0; x < canvas.width; x++) {
@@ -3506,7 +3509,10 @@ async function applicaColoreAnteprima(card) {
         const sat = max === 0 ? 0 : (max - min) / max;
         const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 
-        if (sat > 0.16 || lum < 0.18 || lum > 0.96) continue;
+        const maxSat = isPVCPreview ? 0.18 : 0.13;
+        const minLum = isPVCPreview ? 0.12 : 0.24;
+        const maxLum = isPVCPreview ? 0.965 : 0.70;
+        if (sat > maxSat || lum < minLum || lum > maxLum) continue;
 
         let tr, tg, tb;
         if (textureData) {
@@ -3523,7 +3529,8 @@ async function applicaColoreAnteprima(card) {
 
         // Mantiene un po' dell'ombreggiatura originale per non rendere il
         // profilo completamente piatto.
-        const shade = Math.max(0.72, Math.min(1.18, lum / 0.46));
+        const shadeBase = isPVCPreview ? 0.72 : 0.46;
+        const shade = Math.max(0.72, Math.min(1.18, lum / shadeBase));
         px[i] = Math.max(0, Math.min(255, tr * shade));
         px[i + 1] = Math.max(0, Math.min(255, tg * shade));
         px[i + 2] = Math.max(0, Math.min(255, tb * shade));
@@ -3758,9 +3765,9 @@ function creaSchedaSerramento() {
       ${fieldInput("hTrav", "H Trav. (mm)", "number", "", "compact")}
       ${fieldRifilo()}
       ${fieldFixedSelect("soglia", "Soglia", ["20 mm", "paraspifferi", "girocassa"], "soglia-field")}
-      <div class="colori-row full">
-        ${fieldSelect("coloreInt", "Colore interno", true)}
-        ${fieldSelect("coloreEst", "Colore esterno", true)}
+      <div class="colori-row">
+        ${fieldSelect("coloreInt", "Colore interno", false)}
+        ${fieldSelect("coloreEst", "Colore esterno", false)}
       </div>
       ${fieldSelect("vetro", "Vetro", true, "glass-field")}
       ${fieldSelect("ferramenta", "Ferramenta", true)}
