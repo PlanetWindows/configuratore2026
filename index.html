@@ -277,6 +277,15 @@ img{max-width:100%;height:auto}
 }
 </style>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style id="pw-poppins-font">
+html, body, body *, input, select, textarea, button, option {
+  font-family: 'Poppins', sans-serif !important;
+}
+</style>
 </head>
 <body>
   <header class="app-header">
@@ -6881,7 +6890,7 @@ if (confirmationParams.get('inviato') === '1') {
         new Paragraph({
           spacing:{before:0,after:0,line:260},
           children:[
-            new TextRun({
+            new TextRun({font:'Poppins',
               text:String(text ?? ''),
               bold:!!opts.bold,
               size:opts.size || 19,
@@ -6966,7 +6975,7 @@ if (confirmationParams.get('inviato') === '1') {
         }));
       } else {
         headerLeft.push(new Paragraph({
-          children:[new TextRun({text:'PLANET WINDOWS',bold:true,size:34,color:'231F20'})]
+          children:[new TextRun({font:'Poppins',text:'PLANET WINDOWS',bold:true,size:34,color:'231F20'})]
         }));
       }
 
@@ -6984,10 +6993,10 @@ if (confirmationParams.get('inviato') === '1') {
               width:{size:42,type:WidthType.PERCENTAGE},
               margins:{top:0,bottom:120,left:120,right:0},
               children:[
-                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'Planet Windows SRL',bold:true,size:24})]}),
-                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'Via Buino 68, 41037 Mirandola (MO)',size:17,color:'777777'})]}),
-                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'P.IVA 03552820361 · Tel. 0535-791180',size:17,color:'777777'})]}),
-                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'preventivi@planetwindows.it',bold:true,size:17,color:'9B762E'})]})
+                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'Planet Windows SRL',bold:true,size:24})]}),
+                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'Via Buino 68, 41037 Mirandola (MO)',size:17,color:'777777'})]}),
+                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'P.IVA 03552820361 · Tel. 0535-791180',size:17,color:'777777'})]}),
+                new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'preventivi@planetwindows.it',bold:true,size:17,color:'9B762E'})]})
               ]
             })
           ]
@@ -6997,11 +7006,11 @@ if (confirmationParams.get('inviato') === '1') {
 
       children.push(new Paragraph({
         spacing:{before:180,after:60},
-        children:[new TextRun({text:'CONFIGURATORE PROFESSIONALE',bold:true,size:16,color:'9B762E'})]
+        children:[new TextRun({font:'Poppins',text:'CONFIGURATORE PROFESSIONALE',bold:true,size:16,color:'9B762E'})]
       }));
       children.push(new Paragraph({
         spacing:{after:180},
-        children:[new TextRun({text:String(data.tipoDocumento || 'Preventivo').toUpperCase(),bold:true,size:32,color:'231F20'})]
+        children:[new TextRun({font:'Poppins',text:String(data.tipoDocumento || 'Preventivo').toUpperCase(),bold:true,size:32,color:'231F20'})]
       }));
 
       // Dati documento
@@ -7032,11 +7041,11 @@ if (confirmationParams.get('inviato') === '1') {
       if (String(data.noteGenerali || '').trim()) {
         children.push(new Paragraph({
           spacing:{before:150,after:30},
-          children:[new TextRun({text:'NOTE GENERALI',bold:true,size:16,color:'9B762E'})]
+          children:[new TextRun({font:'Poppins',text:'NOTE GENERALI',bold:true,size:16,color:'9B762E'})]
         }));
         children.push(new Paragraph({
           spacing:{after:150},
-          children:[new TextRun({text:String(data.noteGenerali),size:19})]
+          children:[new TextRun({font:'Poppins',text:String(data.noteGenerali),size:19})]
         }));
       }
 
@@ -7053,8 +7062,8 @@ if (confirmationParams.get('inviato') === '1') {
         children.push(new Paragraph({
           spacing:{before:80,after:100},
           children:[
-            new TextRun({text:`RIGA ${String(idx+1).padStart(2,'0')}  ·  `,bold:true,size:22,color:'9B762E'}),
-            new TextRun({text:String(serr.tipologia || 'Serramento'),bold:true,size:24,color:'231F20'})
+            new TextRun({font:'Poppins',text:`RIGA ${String(idx+1).padStart(2,'0')}  ·  `,bold:true,size:22,color:'9B762E'}),
+            new TextRun({font:'Poppins',text:String(serr.tipologia || 'Serramento'),bold:true,size:24,color:'231F20'})
           ]
         }));
 
@@ -7069,7 +7078,7 @@ if (confirmationParams.get('inviato') === '1') {
         }
         imageChildren.push(new Paragraph({
           alignment:AlignmentType.CENTER,
-          children:[new TextRun({text:String(serr.apertura || 'Apertura'),bold:true,size:17,color:'6F665B'})]
+          children:[new TextRun({font:'Poppins',text:String(serr.apertura || 'Apertura'),bold:true,size:17,color:'6F665B'})]
         }));
 
         const rows = fieldRows(serr).map(([label,value]) => new TableRow({
@@ -7112,10 +7121,18 @@ if (confirmationParams.get('inviato') === '1') {
       children.push(new Paragraph({
         spacing:{before:180,after:0},
         alignment:AlignmentType.CENTER,
-        children:[new TextRun({text:'Planet Windows SRL · Documento generato dal configuratore',size:14,color:'777777'})]
+        children:[new TextRun({font:'Poppins',text:'Planet Windows SRL · Documento generato dal configuratore',size:14,color:'777777'})]
       }));
 
       const doc = new Document({
+        styles:{
+          default:{
+            document:{run:{font:'Poppins'}},
+            heading1:{run:{font:'Poppins'}},
+            heading2:{run:{font:'Poppins'}},
+            heading3:{run:{font:'Poppins'}}
+          }
+        },
         creator:'Planet Windows SRL',
         title:`${data.tipoDocumento || 'Preventivo'} - ${data.cliente || ''}`,
         description:'Documento generato dal configuratore Planet Windows',
@@ -7225,7 +7242,7 @@ if (confirmationParams.get('inviato') === '1') {
       margins:{top:90,bottom:90,left:110,right:110},
       children:[new Paragraph({
         spacing:{before:0,after:0,line:260},
-        children:[new TextRun({
+        children:[new TextRun({font:'Poppins',
           text:String(text??''),
           bold:!!opts.bold,
           size:opts.size||19,
@@ -7239,7 +7256,7 @@ if (confirmationParams.get('inviato') === '1') {
 
     const leftHeader = logo
       ? [new Paragraph({children:[new ImageRun({data:logo,transformation:{width:250,height:48}})]})]
-      : [new Paragraph({children:[new TextRun({text:'PLANET WINDOWS',bold:true,size:34})]})];
+      : [new Paragraph({children:[new TextRun({font:'Poppins',text:'PLANET WINDOWS',bold:true,size:34})]})];
 
     children.push(new Table({
       width:{size:100,type:WidthType.PERCENTAGE},
@@ -7247,19 +7264,19 @@ if (confirmationParams.get('inviato') === '1') {
       rows:[new TableRow({children:[
         new TableCell({width:{size:55,type:WidthType.PERCENTAGE},children:leftHeader}),
         new TableCell({width:{size:45,type:WidthType.PERCENTAGE},children:[
-          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'Planet Windows SRL',bold:true,size:23})]}),
-          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'Via Buino 68, 41037 Mirandola (MO)',size:16,color:'777777'})]}),
-          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'P.IVA 03552820361 · Tel. 0535-791180',size:16,color:'777777'})]}),
-          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({text:'preventivi@planetwindows.it',bold:true,size:16,color:'9B762E'})]})
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'Planet Windows SRL',bold:true,size:23})]}),
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'Via Buino 68, 41037 Mirandola (MO)',size:16,color:'777777'})]}),
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'P.IVA 03552820361 · Tel. 0535-791180',size:16,color:'777777'})]}),
+          new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({font:'Poppins',text:'preventivi@planetwindows.it',bold:true,size:16,color:'9B762E'})]})
         ]})
       ]})]
     }));
 
     children.push(new Paragraph({spacing:{before:180,after:50},children:[
-      new TextRun({text:'CONFIGURATORE PROFESSIONALE',bold:true,size:15,color:'9B762E'})
+      new TextRun({font:'Poppins',text:'CONFIGURATORE PROFESSIONALE',bold:true,size:15,color:'9B762E'})
     ]}));
     children.push(new Paragraph({spacing:{after:150},children:[
-      new TextRun({text:String(data.tipoDocumento||'Preventivo').toUpperCase(),bold:true,size:31})
+      new TextRun({font:'Poppins',text:String(data.tipoDocumento||'Preventivo').toUpperCase(),bold:true,size:31})
     ]}));
 
     children.push(new Table({
@@ -7280,10 +7297,10 @@ if (confirmationParams.get('inviato') === '1') {
 
     if(String(data.noteGenerali||'').trim()){
       children.push(new Paragraph({spacing:{before:140,after:30},children:[
-        new TextRun({text:'NOTE GENERALI',bold:true,size:15,color:'9B762E'})
+        new TextRun({font:'Poppins',text:'NOTE GENERALI',bold:true,size:15,color:'9B762E'})
       ]}));
       children.push(new Paragraph({spacing:{after:120},children:[
-        new TextRun({text:String(data.noteGenerali),size:19})
+        new TextRun({font:'Poppins',text:String(data.noteGenerali),size:19})
       ]}));
     }
 
@@ -7293,8 +7310,8 @@ if (confirmationParams.get('inviato') === '1') {
       else children.push(new Paragraph({spacing:{before:150,after:0},children:[]}));
 
       children.push(new Paragraph({spacing:{before:50,after:90},children:[
-        new TextRun({text:`RIGA ${String(i+1).padStart(2,'0')}  ·  `,bold:true,size:21,color:'9B762E'}),
-        new TextRun({text:String(x.tipologia||'Serramento'),bold:true,size:23})
+        new TextRun({font:'Poppins',text:`RIGA ${String(i+1).padStart(2,'0')}  ·  `,bold:true,size:21,color:'9B762E'}),
+        new TextRun({font:'Poppins',text:String(x.tipologia||'Serramento'),bold:true,size:23})
       ]}));
 
       const fields=[
@@ -7331,7 +7348,7 @@ if (confirmationParams.get('inviato') === '1') {
       }
       preview.push(new Paragraph({
         alignment:AlignmentType.CENTER,
-        children:[new TextRun({text:String(x.apertura||'Apertura'),bold:true,size:16,color:'6F665B'})]
+        children:[new TextRun({font:'Poppins',text:String(x.apertura||'Apertura'),bold:true,size:16,color:'6F665B'})]
       }));
 
       children.push(new Table({
@@ -7354,6 +7371,14 @@ if (confirmationParams.get('inviato') === '1') {
     }
 
     const doc=new Document({
+      styles:{
+        default:{
+          document:{run:{font:'Poppins'}},
+          heading1:{run:{font:'Poppins'}},
+          heading2:{run:{font:'Poppins'}},
+          heading3:{run:{font:'Poppins'}}
+        }
+      },
       creator:'Planet Windows SRL',
       title:`${data.tipoDocumento||'Preventivo'} - ${data.cliente||''}`,
       sections:[{properties:{page:{margin:{top:720,right:720,bottom:720,left:720}}},children}]
