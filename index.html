@@ -3440,11 +3440,10 @@ async function applicaColoreAnteprima(card) {
   const img = card.querySelector(".opening-preview-box img");
   if (!img || img.hidden || !img.dataset.originalSrc) return;
 
-  // Nell'anteprima viene mostrato prima il colore esterno; se non selezionato,
-  // viene usato il colore interno.
-  const coloreEst = valoreSelect(card.querySelector(".coloreEst"));
+  // L'anteprima dell'infisso segue SEMPRE il colore interno.
+  // Il colore esterno non modifica l'immagine di anteprima.
   const coloreInt = valoreSelect(card.querySelector(".coloreInt"));
-  const coloreScelto = coloreEst || coloreInt;
+  const coloreScelto = coloreInt;
   const style = stileAnteprimaColore(coloreScelto);
 
   if (!style) {
