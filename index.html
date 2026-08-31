@@ -275,242 +275,6 @@ img{max-width:100%;height:auto}
 }
 </style>
 
-
-<style id="pw-responsive-final">
-/* ===== RESPONSIVE TABLET / MOBILE ===== */
-
-/* Desktop medio / tablet orizzontale */
-@media (max-width: 1180px) {
-  .workspace {
-    width: min(100% - 24px, 1180px) !important;
-    grid-template-columns: 270px minmax(0,1fr) !important;
-    gap: 14px !important;
-  }
-  .content-panel { padding: 18px !important; }
-  .side-panel { padding: 18px !important; }
-  .serramento-grid {
-    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
-  }
-  .opening-visual.full { grid-column: 1 / -1 !important; }
-}
-
-/* Tablet verticale */
-@media (max-width: 900px) {
-  body { padding-bottom: 110px !important; }
-
-  .app-header {
-    position: static !important;
-    height: auto !important;
-    min-height: 86px !important;
-    padding: 14px 18px !important;
-    flex-wrap: wrap !important;
-    gap: 12px !important;
-  }
-
-  .brand-area {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  .brand-logo {
-    width: 240px !important;
-    max-width: 65vw !important;
-    height: auto !important;
-  }
-
-  .brand-copy {
-    padding-left: 14px !important;
-  }
-
-  .header-actions {
-    width: 100% !important;
-    display: grid !important;
-    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-    gap: 8px !important;
-  }
-
-  .header-btn {
-    width: 100% !important;
-    justify-content: center !important;
-    min-width: 0 !important;
-  }
-
-  .workspace {
-    display: block !important;
-    width: calc(100% - 20px) !important;
-    margin: 12px auto !important;
-  }
-
-  .side-panel {
-    position: static !important;
-    top: auto !important;
-    margin-bottom: 14px !important;
-  }
-
-  .content-panel {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  .configurator-shell {
-    grid-template-columns: 1fr !important;
-  }
-
-  .items-navigator {
-    position: static !important;
-    top: auto !important;
-    margin-bottom: 12px !important;
-  }
-
-  .items-navigator-list {
-    max-height: 240px !important;
-  }
-
-  .serramento-grid {
-    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-    gap: 10px !important;
-  }
-
-  .serramento-grid .full,
-  .opening-visual.full {
-    grid-column: 1 / -1 !important;
-  }
-
-  .serramento-grid .field:has(.coloreInt),
-  .serramento-grid .field:has(.coloreEst) {
-    grid-column: span 1 !important;
-  }
-
-  .detail-heading {
-    align-items: flex-start !important;
-    gap: 8px !important;
-  }
-
-  .opening-dialog {
-    width: calc(100% - 20px) !important;
-    max-height: 90vh !important;
-  }
-
-  .opening-gallery {
-    grid-template-columns: repeat(3,minmax(0,1fr)) !important;
-  }
-}
-
-/* Smartphone */
-@media (max-width: 600px) {
-  body {
-    padding-bottom: 130px !important;
-    overflow-x: hidden !important;
-  }
-
-  .app-header {
-    padding: 12px !important;
-  }
-
-  .brand-area {
-    align-items: flex-start !important;
-    gap: 10px !important;
-  }
-
-  .brand-logo {
-    width: 190px !important;
-    max-width: 58vw !important;
-  }
-
-  .brand-copy {
-    padding-left: 10px !important;
-  }
-
-  .brand-copy strong {
-    font-size: 14px !important;
-  }
-
-  .brand-copy span {
-    font-size: 9px !important;
-  }
-
-  .header-actions {
-    grid-template-columns: 1fr !important;
-  }
-
-  .workspace {
-    width: calc(100% - 12px) !important;
-    margin: 8px auto !important;
-  }
-
-  .side-panel,
-  .content-panel {
-    padding: 12px !important;
-    border-radius: 12px !important;
-  }
-
-  .side-fields,
-  .serramento-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .serramento-grid .field,
-  .serramento-grid .field:has(.coloreInt),
-  .serramento-grid .field:has(.coloreEst),
-  .serramento-grid .full,
-  .opening-visual.full {
-    grid-column: 1 / -1 !important;
-  }
-
-  .opening-visual {
-    display: grid !important;
-    grid-template-columns: 82px minmax(0,1fr) !important;
-    gap: 10px !important;
-  }
-
-  .opening-preview-box {
-    width: 82px !important;
-    height: 82px !important;
-    flex-basis: 82px !important;
-  }
-
-  .opening-visual-title {
-    font-size: 12px !important;
-  }
-
-  .opening-library-btn {
-    width: 100% !important;
-  }
-
-  .opening-gallery {
-    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-    padding: 10px !important;
-  }
-
-  .opening-choice {
-    min-height: 155px !important;
-  }
-
-  .opening-choice img {
-    height: 96px !important;
-    max-height: 96px !important;
-  }
-
-  .navigator-item {
-    grid-template-columns: 46px minmax(0,1fr) !important;
-    padding: 8px !important;
-  }
-
-  .navigator-thumb {
-    width: 46px !important;
-    height: 46px !important;
-  }
-
-  .detail-heading {
-    display: block !important;
-  }
-
-  input, select, textarea {
-    font-size: 16px !important; /* evita zoom automatico iOS */
-  }
-}
-</style>
-
 </head>
 <body>
   <header class="app-header">
@@ -4628,8 +4392,8 @@ function creaDocumentoPdf(data) {
       campoPdf('Soglia', serramento.soglia),
       campoPdf('Colore interno', serramento.coloreInt),
       campoPdf('Colore esterno', serramento.coloreEst),
-      campoPdf('Vetro', serramento.vetro).replace('pw-pdf-field', 'pw-pdf-field pw-wide'),
-      campoPdf('Ferramenta', serramento.ferramenta).replace('pw-pdf-field', 'pw-pdf-field pw-wide')
+      campoPdf('Vetro', serramento.vetro).replace('pw-pdf-field', 'pw-pdf-field pw-pdf-wide'),
+      campoPdf('Ferramenta', serramento.ferramenta).replace('pw-pdf-field', 'pw-pdf-field pw-pdf-wide')
     ].join('');
     const note = String(serramento.note || '').trim()
       ? `<div class="pw-pdf-notes"><span>NOTE</span><p>${escapeHtmlPdf(serramento.note)}</p></div>`
@@ -4658,11 +4422,12 @@ function creaDocumentoPdf(data) {
     .pw-pdf-row-head{display:flex;justify-content:space-between;align-items:center;background:#faf8f4;border-bottom:1px solid #e6dfd4;padding:10px 13px}.pw-pdf-row-head small{font-size:8px;color:#9b762e;font-weight:700;letter-spacing:.8px}.pw-pdf-row-head h2{font-size:16px;margin:2px 0 0}.pw-pdf-row-head b{font-size:10px;border:1px solid #d4ae62;background:#fffaf0;border-radius:999px;padding:6px 9px}
     .pw-pdf-row-body{display:grid;grid-template-columns:145px 1fr;gap:14px;padding:13px}
     .pw-pdf-preview{height:145px;border:1px solid #e2ddd5;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;background:#fff}.pw-pdf-preview img{width:112px;height:112px;object-fit:contain}.pw-pdf-preview>span{font-size:8px;font-weight:700;color:#6f665b;text-align:center;margin-top:5px;max-width:100%}.pw-pdf-no-image{font-size:9px;color:#aaa;text-align:center;line-height:1.6}
-    .pw-pdf-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px;row-gap:0;align-items:start}
-    .pw-pdf-field{border-bottom:1px solid #eee8df;padding:5px 3px 8px;min-width:0;height:auto;min-height:38px;overflow:visible;break-inside:avoid;page-break-inside:avoid}
+    .pw-pdf-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px;row-gap:4px;align-items:start}
+    .pw-pdf-field{border-bottom:1px solid #eee8df;padding:5px 3px 8px;min-width:0;height:auto!important;min-height:42px;overflow:visible!important;break-inside:avoid;page-break-inside:avoid}
     .pw-pdf-field span{display:block;margin-bottom:3px}
-    .pw-pdf-field strong{display:block;font-size:9px;font-weight:600;line-height:1.35;white-space:normal;overflow:visible;overflow-wrap:anywhere;word-break:break-word;max-height:none}
-    .pw-pdf-field.pw-wide{grid-column:1 / -1}
+    .pw-pdf-field strong{display:block;font-size:9.5px;font-weight:600;line-height:1.35;white-space:normal!important;overflow:visible!important;overflow-wrap:anywhere;word-break:break-word;max-height:none!important}
+    .pw-pdf-field:nth-last-child(-n+3){grid-column:span 1}
+    .pw-pdf-field.pw-pdf-wide{grid-column:1 / -1!important;min-height:auto!important}
     .pw-pdf-notes{margin:0 13px 13px;background:#fbfaf8;border-left:3px solid #d4ae62;padding:8px 10px}.pw-pdf-notes p{font-size:9px;margin:0;white-space:pre-wrap}
     .pw-pdf-general-notes{border:1px solid #e3ddd4;border-radius:10px;padding:10px 12px;margin:4px 0 14px;break-inside:avoid}.pw-pdf-general-notes p{font-size:10px;margin:3px 0 0;white-space:pre-wrap}
     .pw-pdf-footer{border-top:1px solid #ddd5c9;margin-top:16px;padding-top:9px;display:flex;justify-content:space-between;color:#777;font-size:8px}
@@ -4700,8 +4465,8 @@ async function creaPdfAllegato(data) {
     const blob = await window.html2pdf().set({
       margin: [7, 7, 9, 7],
       filename,
-      image: { type: 'jpeg', quality: 0.78 },
-      html2canvas: { scale: 1.2, useCORS: true, allowTaint: false, backgroundColor: '#ffffff', logging: false, windowWidth: 794 },
+      image: { type: 'jpeg', quality: 0.96 },
+      html2canvas: { scale: 2.2, useCORS: true, allowTaint: false, backgroundColor: '#ffffff', logging: false, windowWidth: 794 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
       pagebreak: { mode: ['css', 'legacy'] }
     }).from(container).outputPdf('blob');
@@ -7061,81 +6826,6 @@ if (confirmationParams.get('inviato') === '1') {
   };
 })();
 </script>
-
-
-<script id="pw-editable-glass-hardware">
-(function(){
-  function makeEditable(select, kind){
-    if (!select || select.dataset.pwEditable === "1") return;
-    select.dataset.pwEditable = "1";
-
-    const listId = "pw-list-" + kind + "-" + Math.random().toString(36).slice(2);
-    const input = document.createElement("input");
-    input.type = "text";
-    input.className = select.className;
-    input.value = select.options[select.selectedIndex]?.text || select.value || "";
-    input.placeholder = kind === "vetro" ? "Seleziona o scrivi il vetro" : "Seleziona o scrivi la ferramenta";
-    input.setAttribute("list", listId);
-    input.autocomplete = "off";
-
-    const dl = document.createElement("datalist");
-    dl.id = listId;
-    [...select.options].forEach(o => {
-      if (!o.value && !o.textContent.trim()) return;
-      const op = document.createElement("option");
-      op.value = o.textContent.trim();
-      dl.appendChild(op);
-    });
-
-    select.style.display = "none";
-    select.parentNode.insertBefore(input, select);
-    select.parentNode.appendChild(dl);
-
-    const sync = () => {
-      const typed = input.value.trim();
-      let match = [...select.options].find(o => o.textContent.trim() === typed);
-      if (match) {
-        select.value = match.value;
-      } else {
-        let custom = [...select.options].find(o => o.dataset.pwCustom === "1");
-        if (!custom) {
-          custom = document.createElement("option");
-          custom.dataset.pwCustom = "1";
-          select.appendChild(custom);
-        }
-        custom.value = typed;
-        custom.textContent = typed;
-        select.value = typed;
-      }
-      select.dispatchEvent(new Event("change", {bubbles:true}));
-    };
-    input.addEventListener("change", sync);
-    input.addEventListener("blur", sync);
-  }
-
-  function scan(){
-    document.querySelectorAll("select").forEach(sel => {
-      const label = sel.closest(".field")?.querySelector("label")?.textContent?.toLowerCase() || "";
-      if (label.includes("vetro")) makeEditable(sel, "vetro");
-      if (label.includes("ferramenta")) makeEditable(sel, "ferramenta");
-    });
-  }
-  new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});
-  setTimeout(scan,0);
-})();
-</script>
-<style id="pw-editable-fields-style">
-  input[list^="pw-list-"]{
-    width:100%!important;
-    min-width:0!important;
-    white-space:normal!important;
-    overflow:visible!important;
-    text-overflow:clip!important;
-  }
-  @media(max-width:900px){
-    input[list^="pw-list-"]{font-size:16px!important}
-  }
-</style>
 
 </body>
 </html>
