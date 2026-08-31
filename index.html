@@ -6822,5 +6822,60 @@ if (confirmationParams.get('inviato') === '1') {
 })();
 </script>
 
+
+<script id="pw-pdf-no-overlap-fix">
+(function(){
+  const originalBuildPdfDocument = window.buildPdfDocument;
+
+  function injectPdfFixes(container){
+    if (!container || container.querySelector("#pw-pdf-overlap-style")) return;
+
+    const style = document.createElement("style");
+    style.id = "pw-pdf-overlap-style";
+    style.textContent = `
+      .pw-pdf-fields{
+        align-items:start !important;
+        row-gap:12px !important;
+      }
+      .pw-pdf-field{
+        min-height:42px !important;
+        height:auto !important;
+        overflow:visible !important;
+        padding-bottom:9px !important;
+      }
+      .pw-pdf-field strong{
+        white-space:normal !important;
+        overflow:visible !important;
+        text-overflow:clip !important;
+        line-height:1.35 !important;
+        min-height:24px !important;
+        overflow-wrap:anywhere !important;
+        word-break:normal !important;
+      }
+      .pw-pdf-row,
+      .pw-pdf-row-body,
+      .pw-pdf-fields{
+        overflow:visible !important;
+      }
+    `;
+    container.appendChild(style);
+  }
+
+  // Intercetta il contenitore PDF appena viene creato.
+  const observer = new MutationObserver(mutations => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (!(node instanceof HTMLElement)) continue;
+        if (node.querySelector?.(".pw-pdf-document") || node.classList?.contains("pw-pdf-document")) {
+          injectPdfFixes(node);
+        }
+      }
+    }
+  });
+
+  observer.observe(document.body, { childList:true, subtree:true });
+})();
+</script>
+
 </body>
 </html>
