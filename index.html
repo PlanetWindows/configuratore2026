@@ -36,7 +36,8 @@
         document.querySelector('.pw-loader').innerHTML = `<div><strong>Impossibile caricare il configuratore</strong><span>Aggiorna la pagina e riprova.${lastError ? ` (${String(lastError.message || lastError)})` : ''}</span></div>`;
         return;
       }
-      html = html.replace(/<\/body>/i, '<script src="pw-enhancements.js?v=20260907-1"><\\/script></body>');
+      const enhancementTag = '<script src="pw-enhancements.js?v=20260907-1"></scr' + 'ipt>';
+      html = html.replace(/<\/body>/i, enhancementTag + '</body>');
       document.open();
       document.write(html);
       document.close();
