@@ -9,24 +9,20 @@ function isAlluminio(card){
   return /\balluminio\b|planet 72|planet 82|planet door 72|planet door 82|planet panoramico|planet top slide|top slide|panoramico/.test(t);
 }
 function colorEl(card){
-  return card?.querySelector('.colore-interno,.coloreInterno,[name*="colore_interno"],[name*="coloreInterno"],[class*="colore"][class*="intern"]');
+  return card?.querySelector('.coloreInt,.colore-interno,.coloreInterno,[name*="colore_interno"],[name*="coloreInterno"],[class*="colore"][class*="intern"]');
 }
-function cssColor(el){
+function selectedColor(el){
   if(!el)return'';
-  const o=el.selectedOptions?.[0];
-  for(const x of [o,el]){
-    if(!x)continue;
-    for(const a of ['data-color','data-colore','data-hex','data-rgb']){
-      const v=x.getAttribute?.(a); if(v)return v;
-    }
-  }
-  const box=el.closest('.field,.form-group,.color-field')||el.parentElement;
-  const sw=box?.querySelector('.swatch,.color-swatch,[data-color-preview],[style*="background"]');
-  if(sw){
-    const b=getComputedStyle(sw).backgroundColor;
-    if(b&&b!=='rgba(0, 0, 0, 0)')return b;
-  }
-  return'';
+  try{
+    return typeof window.valoreSelect==='function'?(window.valoreSelect(el)||''):(el.value||'');
+  }catch{return el.value||'';}
+}
+function previewStyle(el){
+  const value=selectedColor(el);
+  if(!value)return null;
+  try{
+    return typeof window.stileAnteprimaColore==='function'?window.stileAnteprimaColore(value):null;
+  }catch{return null;}
 }
 function RGB(c){
   if(!c)return null;
@@ -35,25 +31,51 @@ function RGB(c){
   const a=(getComputedStyle(d).color.match(/[\d.]+/g)||[]).slice(0,3).map(Number);
   d.remove(); return a.length===3?a:null;
 }
+function loadImage(src){
+  return new Promise((resolve,reject)=>{
+    const image=new Image();
+    image.onload=()=>resolve(image);
+    image.onerror=reject;
+    image.src=src;
+  });
+}
+function syncCorrectBase(card){
+  const img=card?.querySelector('.opening-visual img');
+  const base=img?.dataset?.pwBaseSrc||'';
+  if(img&&base)img.dataset.originalSrc=base;
+}
 
 async function recolorAlluminio(card){
   if(!card||!isAlluminio(card))return;
   const img=card.querySelector('.opening-visual img');
   const ce=colorEl(card);
   if(!img||!ce||img.hidden)return;
-  const target=RGB(cssColor(ce));
-  if(!target)return;
 
   const base=img.dataset.pwBaseSrc || img.getAttribute('src') || '';
-  if(!base || base.startsWith('data:'))return;
+  if(!base)return;
   img.dataset.pwBaseSrc=base;
-  const ck=base+'|ALONLY|'+target.join(',');
+  img.dataset.originalSrc=base;
+
+  const style=previewStyle(ce);
+  if(!style){
+    img.src=base;
+    if(typeof window.renderNavigator==='function')window.renderNavigator();
+    return;
+  }
+
+  const styleKey=selectedColor(ce);
+  const ck=base+'|ALONLY|'+styleKey;
   if(cache.has(ck)){ img.src=cache.get(ck); return; }
 
-  const source=new Image();
-  source.crossOrigin='anonymous';
-  source.src=base;
-  try{ await source.decode(); }catch{return;}
+  const token=String(Date.now())+Math.random();
+  img.dataset.colorRenderToken=token;
+
+  let source,texture=null;
+  try{
+    source=await loadImage(base);
+    if(style.type==='texture'&&style.src)texture=await loadImage(style.src);
+  }catch{return;}
+  if(img.dataset.colorRenderToken!==token)return;
 
   const w=source.naturalWidth, h=source.naturalHeight;
   if(!w||!h)return;
@@ -62,6 +84,20 @@ async function recolorAlluminio(card){
   ctx.drawImage(source,0,0);
   let id; try{id=ctx.getImageData(0,0,w,h);}catch{return;}
   const p=id.data, total=w*h;
+
+  let target=null,textureData=null,tw=0,th=0;
+  if(texture){
+    const tc=document.createElement('canvas');
+    tw=texture.naturalWidth||texture.width;
+    th=texture.naturalHeight||texture.height;
+    tc.width=tw;tc.height=th;
+    const tx=tc.getContext('2d',{willReadFrequently:true});
+    tx.drawImage(texture,0,0,tw,th);
+    textureData=tx.getImageData(0,0,tw,th).data;
+  }else if(style.type==='solid'&&style.color){
+    target=RGB(style.color);
+  }
+  if(!textureData&&!target)return;
 
   /*
     Le tavole ALLUMINIO provenienti dai PDF non hanno tutte lo stesso grigio:
@@ -116,25 +152,41 @@ async function recolorAlluminio(card){
       const n=q*4;
       const r=p[n],g=p[n+1],b=p[n+2];
       const lum=(r+g+b)/3;
+      let tr,tg,tb;
+      if(textureData){
+        const x=q%w,y=(q/w)|0;
+        const ti=((y%th)*tw+(x%tw))*4;
+        tr=textureData[ti];tg=textureData[ti+1];tb=textureData[ti+2];
+      }else{
+        [tr,tg,tb]=target;
+      }
       // Mantiene le ombre originali del profilo senza creare macchie piatte.
       const shade=Math.max(0.28,Math.min(1.18,lum/150));
-      p[n]=Math.min(255,Math.round(target[0]*shade));
-      p[n+1]=Math.min(255,Math.round(target[1]*shade));
-      p[n+2]=Math.min(255,Math.round(target[2]*shade));
+      p[n]=Math.min(255,Math.round(tr*shade));
+      p[n+1]=Math.min(255,Math.round(tg*shade));
+      p[n+2]=Math.min(255,Math.round(tb*shade));
     }
   }
 
   ctx.putImageData(id,0,0);
   const out=cv.toDataURL('image/webp',0.96);
   cache.set(ck,out);
-  img.src=out;
+  if(img.dataset.colorRenderToken===token){
+    img.src=out;
+    if(typeof window.renderNavigator==='function')window.renderNavigator();
+  }
 }
 
 // Esegue DOPO la vecchia routine, sovrascrivendo soltanto il risultato colore ALLUMINIO.
 document.addEventListener('change',e=>{
   const card=e.target?.closest?.('.serramento');
   if(!card||!isAlluminio(card))return;
-  if(e.target===colorEl(card)) setTimeout(()=>recolorAlluminio(card),140);
+  if(e.target===colorEl(card)){
+    // La vecchia routine parte sullo stesso evento: le consegniamo subito la
+    // nuova tavola ALLUMINIO, così non può ripristinare l'immagine precedente.
+    syncCorrectBase(card);
+    setTimeout(()=>recolorAlluminio(card),140);
+  }
 },true);
 
 // Se l'immagine viene cambiata dall'apertura, riapplica solo il colore interno già scelto.
