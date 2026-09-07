@@ -100,13 +100,10 @@ async function recolorAlluminio(card){
   if(!textureData&&!target)return;
 
   /*
-    Le tavole ALLUMINIO provenienti dai PDF non hanno tutte lo stesso grigio:
-    alcune cornici sono scure, altre medie/chiare. Il vecchio filtro 115-215
-    perciò funzionava solo su alcune immagini.
-
-    Qui individuiamo i componenti CONNESSI neutri della tavola e coloriamo
-    soltanto quelli abbastanza grandi/densi da essere profili della cornice.
-    Testi, simboli sottili, maniglie e fondo bianco vengono esclusi.
+    Le tavole ALLUMINIO provenienti dai PDF non hanno tutte lo stesso grigio.
+    La maschera include ora anche i riempimenti e le superfici grigio-chiare
+    dell'infisso, non soltanto le cornici, continuando a escludere fondo bianco,
+    testi, simboli sottili e dettagli non pertinenti.
   */
   const mask=new Uint8Array(total);
   for(let y=0;y<h;y++){
@@ -116,7 +113,7 @@ async function recolorAlluminio(card){
       const r=p[n],g=p[n+1],b=p[n+2];
       const mx=Math.max(r,g,b), mn=Math.min(r,g,b);
       const lum=(r+g+b)/3;
-      if(mx-mn<=34 && lum>=32 && lum<=238) mask[q]=1;
+      if(mx-mn<=48 && lum>=24 && lum<=250) mask[q]=1;
     }
   }
 
@@ -160,7 +157,6 @@ async function recolorAlluminio(card){
       }else{
         [tr,tg,tb]=target;
       }
-      // Mantiene le ombre originali del profilo senza creare macchie piatte.
       const shade=Math.max(0.28,Math.min(1.18,lum/150));
       p[n]=Math.min(255,Math.round(tr*shade));
       p[n+1]=Math.min(255,Math.round(tg*shade));
@@ -177,19 +173,15 @@ async function recolorAlluminio(card){
   }
 }
 
-// Esegue DOPO la vecchia routine, sovrascrivendo soltanto il risultato colore ALLUMINIO.
 document.addEventListener('change',e=>{
   const card=e.target?.closest?.('.serramento');
   if(!card||!isAlluminio(card))return;
   if(e.target===colorEl(card)){
-    // La vecchia routine parte sullo stesso evento: le consegniamo subito la
-    // nuova tavola ALLUMINIO, così non può ripristinare l'immagine precedente.
     syncCorrectBase(card);
     setTimeout(()=>recolorAlluminio(card),140);
   }
 },true);
 
-// Se l'immagine viene cambiata dall'apertura, riapplica solo il colore interno già scelto.
 document.addEventListener('change',e=>{
   const card=e.target?.closest?.('.serramento');
   if(!card||!isAlluminio(card))return;
