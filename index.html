@@ -37,8 +37,6 @@
         return;
       }
 
-      // Planet Door 72 ALLUMINIO: conserva solo le aperture supportate dal nuovo set ZIP.
-      // La sostituzione è limitata alla stringa esatta di Planet Door 72 e non tocca PVC/Reverii.
       const door72Old = 'Portoncino antipanico dx | Portoncino antipanico sx | Pontoncino antipanico dx con traverso | Portoncino antipanico 2 ante sx | Portoncino antipanico 2 ante asimmetriche o interno dx | Portoncino interno sx | Portoncino interno con tarverso | Portoncino interno con sopraluce | Portoncino interno con trapezio | Portoncino interno arco ribassato | Portoncino interno arco a tutto sesto | Portoncino interno fianco luce dx | Portoncino interno fianco luce sx | Portoncino interno con 2 ante sopraluce | Portoncino interno 2 ante traverso | Portoncino interno 2 ante arco ribassato | Portoncino interno 2 ante arco a tutto sesto';
       const door72New = 'Portoncino antipanico dx | Portoncino antipanico sx | Pontoncino antipanico dx con traverso | Portoncino antipanico 2 ante sx | Portoncino antipanico 2 ante asimmetriche | Portoncino interno dx | Portoncino interno sx | Portoncino interno con tarverso | Portoncino interno con sopraluce | Portoncino interno fianco luce dx | Portoncino interno fianco luce sx | Portoncino interno con 2 ante sopraluce | Portoncino interno 2 ante traverso';
       html = html.replace(door72Old, door72New);
@@ -55,7 +53,7 @@
         '<script src="pw-alluminio-assets-6.js?v=20260907-zip1"></scr' + 'ipt>' +
         '<script src="pw-alluminio-assets-7.js?v=20260907-zip1"></scr' + 'ipt>' +
         '<script src="pw-alluminio-only.js?v=20260907-zip1"></scr' + 'ipt>' +
-        '<script src="pw-alluminio-color-only.js?v=20260907-color2"></scr' + 'ipt>';
+        '<script src="pw-alluminio-color-only.js?v=20260907-color3"></scr' + 'ipt>';
       html = html.replace(/<\/body>/i, enhancementTag + '</body>');
       document.open();
       document.write(html);
