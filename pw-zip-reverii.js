@@ -1,0 +1,68 @@
+(function(){
+  'use strict';
+  const A=[
+    ['Finestra','1- Fisso','@c4'],
+    ['Finestra','2- Fisso con traverso','2-fisso-con-traverso.webp'],
+    ['Finestra','3- Fisso con piantone','@c5'],
+    ['Finestra','4- Wasistas con cricchetto','4-wasistas-cricchetto.webp'],
+    ['Finestra','5- Wasistas con cremonese','5-wasistas-cremonese.webp'],
+    ['Finestra','6- Finestra 1 anta destra','@c6'],
+    ['Finestra','7- Finestra 1 anta sinistra','@c7'],
+    ['Finestra','8- Finestra 1 anta con sottoluce','8-f1-con-sottoluce.webp'],
+    ['Finestra','9- Finestra 1 anta con sopraluce','9-f1-sovraluce.webp'],
+    ['Finestra','10- Finestra 2 ante con piantone','10-f2-con-piantone.webp'],
+    ['Finestra','11- Finestra 2 ante destra','11-f2-dx.webp'],
+    ['Finestra','12- Finestra 2 ante sinistra','12-f2-sx.webp'],
+    ['Finestra','13- Finestra 2 ante con sottoluce','13-f2-con-sottoluce.webp'],
+    ['Finestra','14- Finestra 2 ante con sopraluce','14-f2-con-sovraluce.webp'],
+    ['Finestra','15- Finestra 3 ante','15-f3.webp'],
+    ['Finestra','16- Finestra 4 ante','16-f4.webp'],
+    ['Portafinestra','17- Portafinestra 1 anta destra','17-pf1-dx.webp'],
+    ['Portafinestra','18- Portafinestra 1 anta sinistra','18-pf-1-sx.webp'],
+    ['Portafinestra','19- Portafinestra 1 anta con sopraluce','19-pf1-sovraluce.webp'],
+    ['Portafinestra','20- Portafinestra 1 anta con traverso','20-pf1-traverso.webp'],
+    ['Portafinestra','21- Portafinestra 1 anta con telaio inferiore','21-pf-1-con-telaio-inf.webp'],
+    ['Portafinestra','22- Portafinestra 1 anta con serratura','22-pf1-con-serratura.webp'],
+    ['Portafinestra','23- Portafinestra 2 ante destra','23-pf2-dx.webp'],
+    ['Portafinestra','24- Portafinestra 2 ante sinistra','24-pf2-sx.webp'],
+    ['Portafinestra','25- Portafinestra 2 ante con sopraluce','25-pf-con-sovraluce.webp'],
+    ['Portafinestra','26- Portafinestra 2 ante con traverso','26-pf2-con-traverso.webp'],
+    ['Portafinestra','27- Portafinestra 2 ante con telaio inferiore','27-pf-2-con-telaio-inf.webp'],
+    ['Portafinestra','28- Portafinestra 2 ante con serratura','28-pf2-con-serratura.webp'],
+    ['Portafinestra','29- Portafinestra 3 ante','29-pf-3.webp'],
+    ['Portafinestra','30- Portafinestra 4 ante','30-pf4.webp'],
+    ['Portoncino','31- Portoncino interno 1 anta destra','31-pi1-dx.webp'],
+    ['Portoncino','32- Portoncino interno 1 anta sinistra','32-pi1-sx.webp'],
+    ['Portoncino','33- Portoncino interno 1 anta con traverso','33-pi-1-con-traverso.webp'],
+    ['Portoncino','34- Portoncino interno 1 anta con fianco luce sinistro','34-pi-1-con-finaco-luce-sx.webp'],
+    ['Portoncino','35- Portoncino interno 1 anta con fianco luce destro','35-pi-1-con-finaco-luce-dx.webp'],
+    ['Portoncino','36- Portoncino interno 1 anta con sopraluce','36-pi-1-con-sovraluce.webp'],
+    ['Portoncino','37- Portoncino interno 2 ante destra','37-pi2-dx.webp'],
+    ['Portoncino','38- Portoncino interno 2 ante sinistra','38-pi2-sx.webp'],
+    ['Portoncino','39- Portoncino interno 2 ante asimmetriche','39-pi-2-ante-asimmetriche.webp'],
+    ['Portoncino','40- Portoncino interno 2 ante con traverso','40-pi-2-con-traverso.webp'],
+    ['Portoncino','41- Portoncino interno 2 ante con sopraluce','41-pi2-con-sovraluce.webp'],
+    ['Scorrevole Traslante','43- Scorrevole traslante 1 anta destra','43-traslante-a-dx.webp'],
+    ['Scorrevole Traslante','44- Scorrevole traslante 1 anta sinistra','44-traslante-a-sx.webp'],
+    ['Portoncino a Spingere','45- Portoncino a spingere 1 anta destra','45-pe-1-dx.webp'],
+    ['Portoncino a Spingere','46- Portoncino a spingere 1 anta sinistra','46-pe-1-sx.webp'],
+    ['Portoncino a Spingere','47- Portoncino a spingere 1 anta con traverso','47-pe-1-con-traverso.webp'],
+    ['Portoncino a Spingere','48- Portoncino a spingere 2 ante destra','48-pe2-dx.webp'],
+    ['Portoncino a Spingere','49- Portoncino a spingere 2 ante sinistra','49-pe-2-sx.webp'],
+    ['Portoncino a Spingere','50- Portoncino a spingere 2 ante asimmetriche','50-pe2-ante-asimmetriche.webp'],
+    ['Portoncino a Spingere','51- Portoncino a spingere 2 ante con traverso','51-pe2-con-traverso.webp'],
+    ['Portoncino Antipanico','52- Portoncino antipanico 1 anta destra','52-pa-dx.webp'],
+    ['Portoncino Antipanico','53- Portoncino antipanico 1 anta sinistra','53-pa-sx.webp'],
+    ['Portoncino Antipanico','54- Portoncino antipanico 1 anta con traverso','54-pa-con-traverso.webp'],
+    ['Portoncino Antipanico','55- Portoncino antipanico 2 ante destra','55-pa-2-dx.webp'],
+    ['Portoncino Antipanico','56- Portoncino antipanico 2 ante sinistra','56-pa-2-sx.webp'],
+    ['Portoncino Antipanico','57- Portoncino antipanico 2 ante asimmetriche','57-pa-2-ante-asimmetriche.webp'],
+    ['Portoncino Antipanico','58- Portoncino antipanico 2 ante con traverso','58-pa-2-con-traverso.webp']
+  ];
+  window.PW_ZIP_OPENINGS=window.PW_ZIP_OPENINGS||[];
+  for(const r of A){
+    const raw=r[2];
+    const image=raw[0]==='@' ? (window.PW_ZIP_COLLISIONS||{})[raw.slice(1)] : raw;
+    window.PW_ZIP_OPENINGS.push({madre:'REVERII',serie:['Reverii'],tipologia:[r[0]],nome:r[1],immagine:image});
+  }
+})();
