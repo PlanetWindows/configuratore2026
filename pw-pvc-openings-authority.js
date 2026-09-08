@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const VERSION='2026-09-08-pvc-authority-4';
+const VERSION='2026-09-08-pvc-authority-5';
 const ASSET_BASE='https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
 const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/sovraluce/g,'sopraluce').replace(/taverso|tarverso/g,'traverso').replace(/[^a-z0-9]+/g,' ').trim();
 const text=el=>el?(el.options?.[el.selectedIndex]?.textContent||el.value||''):'';
@@ -9,9 +9,34 @@ function category(card){const tipo=norm(text(card?.querySelector('.tipologia')))
 function belongs(r,cat){const n=norm(r.nome);switch(cat){case'FINESTRA':return n==='fisso'||n.startsWith('fisso ')||n.startsWith('wasistas ')||n.startsWith('finestra ');case'PORTAFINESTRA':return n.startsWith('portafinestra ');case'INTERNO':return n.startsWith('portoncino interno ');case'ANTIPANICO':return n.startsWith('porta antipanico ')||n.startsWith('portoncino antipanico ');case'SPINGERE':return n.startsWith('porta a spingere ')||n.startsWith('portoncino a spingere ');case'TRASLANTE':return n.startsWith('scorrevole traslante ');case'PARALLELO':return n.startsWith('parallelo ');case'ALZANTE':return n.startsWith('alzante scorrevole ');default:return false;}}
 function rows(card){if(!isPVC(card))return[];const cat=category(card);if(!cat)return[];const all=(window.PW_ZIP_OPENINGS||[]).filter(r=>norm(r?.madre)==='pvc'&&belongs(r,cat));const out=[],seen=new Set();for(const r of all){const k=norm(r.nome);if(!k||seen.has(k))continue;seen.add(k);out.push(r);}return out;}
 function imageSrc(raw){if(!raw)return'';if(raw.startsWith('@c')){const key=raw.slice(1);return (window.PW_ZIP_COLLISIONS||{})[key]||'';}if(raw.startsWith('data:')||/^https?:/i.test(raw))return raw;return ASSET_BASE+raw.replace(/^\.\//,'');}
-function apply(card){if(!isPVC(card))return;const sel=card.querySelector('.apertura');if(!sel)return;const list=rows(card),old=norm(sel.value||text(sel));const desired=['Seleziona apertura',...list.map(r=>r.nome)],current=[...sel.options].map(o=>o.textContent||'');const same=current.length===desired.length&&current.every((v,i)=>norm(v)===norm(desired[i]));if(!same){const frag=document.createDocumentFragment();const ph=document.createElement('option');ph.value='';ph.textContent='Seleziona apertura';frag.appendChild(ph);let keep='';for(const r of list){const o=document.createElement('option');o.value=r.nome;o.textContent=r.nome;const src=imageSrc(r.immagine);if(src)o.dataset.openingImage=src;if(norm(r.nome)===old)keep=r.nome;frag.appendChild(o);}sel.replaceChildren(frag);sel.value=keep||'';}delete sel.dataset.openingImage;delete card.dataset.pwSummaryOpeningImage;const rec=list.find(r=>norm(r.nome)===norm(sel.value));const src=imageSrc(rec?.immagine||'');if(src){sel.dataset.openingImage=src;card.dataset.pwSummaryOpeningImage=src;}sel.dataset.pwPvcAuthority=VERSION;}
+function resolvePVC(value,card){if(!isPVC(card))return null;const q=norm(value);if(!q)return null;const rec=rows(card).find(r=>norm(r.nome)===q)||null;if(!rec)return null;return Object.assign({},rec,{immagine:imageSrc(rec.immagine)});}
+
+let originalOpeningRecord=null, originalOpeningImage=null, originalAvailableOpenings=null;
+function patchResolvers(){
+  if(typeof window.openingRecord==='function' && !window.openingRecord.__pwPVCv5){
+    originalOpeningRecord=originalOpeningRecord||window.openingRecord;
+    const prev=window.openingRecord;
+    const fn=function(value,card=null){if(isPVC(card))return resolvePVC(value,card);return prev.apply(this,arguments);};
+    fn.__pwPVCv5=true;window.openingRecord=fn;
+  }
+  if(typeof window.openingImage==='function' && !window.openingImage.__pwPVCv5){
+    originalOpeningImage=originalOpeningImage||window.openingImage;
+    const prev=window.openingImage;
+    const fn=function(value,card=null){if(isPVC(card)){const rec=resolvePVC(value,card);return rec?.immagine||'';}return prev.apply(this,arguments);};
+    fn.__pwPVCv5=true;window.openingImage=fn;
+  }
+  if(typeof window.availableOpenings==='function' && !window.availableOpenings.__pwPVCv5){
+    originalAvailableOpenings=originalAvailableOpenings||window.availableOpenings;
+    const prev=window.availableOpenings;
+    const fn=function(card){if(isPVC(card))return rows(card).map(r=>Object.assign({},r,{immagine:imageSrc(r.immagine)}));return prev.apply(this,arguments);};
+    fn.__pwPVCv5=true;window.availableOpenings=fn;
+  }
+}
+function apply(card){if(!isPVC(card))return;patchResolvers();const sel=card.querySelector('.apertura');if(!sel)return;const list=rows(card),old=norm(sel.value||text(sel));const desired=['Seleziona apertura',...list.map(r=>r.nome)],current=[...sel.options].map(o=>o.textContent||'');const same=current.length===desired.length&&current.every((v,i)=>norm(v)===norm(desired[i]));if(!same){const frag=document.createDocumentFragment();const ph=document.createElement('option');ph.value='';ph.textContent='Seleziona apertura';frag.appendChild(ph);let keep='';for(const r of list){const o=document.createElement('option');o.value=r.nome;o.textContent=r.nome;const src=imageSrc(r.immagine);if(src)o.dataset.openingImage=src;if(norm(r.nome)===old)keep=r.nome;frag.appendChild(o);}sel.replaceChildren(frag);sel.value=keep||'';}const rec=resolvePVC(sel.value,card);const src=rec?.immagine||'';if(src){sel.dataset.openingImage=src;card.dataset.pwSummaryOpeningImage=src;}else{delete sel.dataset.openingImage;delete card.dataset.pwSummaryOpeningImage;}sel.dataset.pwPvcAuthority=VERSION;}
 function schedule(card){[0,80,200,450,900,1500,2200,3200].forEach(ms=>setTimeout(()=>apply(card),ms));}
 document.addEventListener('change',e=>{const card=e.target?.closest?.('.serramento');if(!card||!isPVC(card))return;if(e.target.matches('.madre,.serie,.tipologia,.apertura'))schedule(card);},true);
-function init(){document.querySelectorAll('.serramento').forEach(c=>{if(isPVC(c))schedule(c);});}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();setTimeout(init,700);setTimeout(init,1800);setInterval(()=>{document.querySelectorAll('.serramento').forEach(c=>{if(isPVC(c))apply(c);});},300);window.PW_PVC_OPENINGS_AUTHORITY_VERSION=VERSION;
+function init(){patchResolvers();document.querySelectorAll('.serramento').forEach(c=>{if(isPVC(c))schedule(c);});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();setTimeout(init,700);setTimeout(init,1800);
+setInterval(()=>{patchResolvers();document.querySelectorAll('.serramento').forEach(c=>{if(isPVC(c))apply(c);});},300);
+window.PW_PVC_OPENINGS_AUTHORITY_VERSION=VERSION;
 })();
