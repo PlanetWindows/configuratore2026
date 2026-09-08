@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  const VERSION='2026-09-08-summary-family-1';
+  const VERSION='2026-09-08-summary-family-2';
   const ASSET_BASE='https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
 
   const norm=v=>String(v||'')
@@ -11,6 +11,14 @@
     .replace(/[^a-z0-9]+/g,' ')
     .trim();
 
+  function canonicalFamily(value){
+    const n=norm(value);
+    if(n==='pvc'||n.startsWith('pvc ')) return 'pvc';
+    if(n==='reverii'||n.includes('reverii')) return 'reverii';
+    if(n==='alluminio'||n.includes('alluminio')) return 'alluminio';
+    return '';
+  }
+
   function val(card,sel){
     const el=card?.querySelector(sel);
     if(!el) return '';
@@ -19,7 +27,7 @@
 
   function familyContext(card){
     return {
-      madre:norm(val(card,'.madre')),
+      madre:canonicalFamily(val(card,'.madre')),
       serie:norm(val(card,'.serie')),
       tipologia:norm(val(card,'.tipologia'))
     };
@@ -30,12 +38,15 @@
     const c=familyContext(card);
     if(!c.madre) return null;
     const q=norm(value);
+    if(!q) return null;
+
     const rows=(window.PW_ZIP_OPENINGS||[]).filter(r=>{
-      if(norm(r.madre)!==c.madre) return false;
+      if(canonicalFamily(r.madre)!==c.madre) return false;
       if(r.serie?.length && c.serie && !r.serie.some(s=>norm(s)===c.serie)) return false;
       if(r.tipologia?.length && c.tipologia && !r.tipologia.some(t=>norm(t)===c.tipologia)) return false;
       return true;
     });
+
     return rows.find(r=>norm(r.nome)===q)||null;
   }
 
@@ -47,31 +58,44 @@
     return ASSET_BASE+src.replace(/^\.\//,'');
   }
 
+  function clearCard(card){
+    if(!card) return;
+    const sel=card.querySelector('.apertura');
+    if(sel) delete sel.dataset.openingImage;
+    delete card.dataset.pwSummaryOpeningImage;
+  }
+
   function storeOnCard(card){
     if(!card) return;
+    clearCard(card);
     const sel=card.querySelector('.apertura');
     if(!sel) return;
     const value=val(card,'.apertura');
     const src=imageFor(value,card);
-    if(src){
-      sel.dataset.openingImage=src;
-      card.dataset.pwSummaryOpeningImage=src;
-    }else{
-      delete sel.dataset.openingImage;
-      delete card.dataset.pwSummaryOpeningImage;
-    }
+    if(!src) return;
+    sel.dataset.openingImage=src;
+    card.dataset.pwSummaryOpeningImage=src;
   }
 
   function patchOpeningImage(){
     const original=window.openingImage;
     if(typeof original!=='function'||original.__pwSummaryFamilyPatched) return;
     const patched=function(value,card){
-      const strict=imageFor(value,card);
-      if(strict) return strict;
+      const family=familyContext(card).madre;
+      if(family==='pvc'||family==='reverii'||family==='alluminio'){
+        // Per le tre famiglie principali NON usare mai il resolver generico:
+        // o esiste la corrispondenza della famiglia selezionata, oppure nessuna immagine.
+        return imageFor(value,card)||'';
+      }
       return original.apply(this,arguments);
     };
     patched.__pwSummaryFamilyPatched=true;
     window.openingImage=patched;
+  }
+
+  function refreshCard(card){
+    patchOpeningImage();
+    storeOnCard(card);
   }
 
   function init(){
@@ -83,7 +107,12 @@
     if(!e.target?.matches?.('.madre,.serie,.tipologia,.apertura')) return;
     const card=e.target.closest('.serramento');
     if(!card) return;
-    setTimeout(()=>{patchOpeningImage();storeOnCard(card)},0);
+
+    // Cancella subito qualunque immagine rimasta dalla selezione precedente.
+    clearCard(card);
+    // Altri script del configuratore aggiornano i dataset con un piccolo ritardo:
+    // riscriviamo quindi SOLO la mappatura della famiglia corrente dopo di loro.
+    [0,60,140,300].forEach(ms=>setTimeout(()=>refreshCard(card),ms));
   },true);
 
   const obs=new MutationObserver(()=>init());
