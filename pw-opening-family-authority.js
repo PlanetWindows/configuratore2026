@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  const VERSION='2026-09-08-family-authority-1';
+  const VERSION='2026-09-08-family-authority-2';
   const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/sovraluce/g,'sopraluce').replace(/taverso|tarverso/g,'traverso').replace(/[^a-z0-9]+/g,' ').trim();
   const text=el=>el ? (el.options?.[el.selectedIndex]?.textContent || el.value || '') : '';
   const fam=v=>{const n=norm(v);if(n.includes('reverii'))return'REVERII';if(n.includes('alluminio'))return'ALLUMINIO';if(n.includes('pvc'))return'PVC';return'';};
@@ -12,16 +12,37 @@
       tipo:norm(text(card?.querySelector('.tipologia')))
     };
   }
+
+  function tipoCompatibile(rowTipo, selectedTipo, madre){
+    const rt=norm(rowTipo);
+    const st=norm(selectedTipo);
+    if(rt===st) return true;
+
+    // Alias SOLO per ALLUMINIO / Planet Door 72.
+    // "Apertura esterna" nel configuratore corrisponde ai disegni del portoncino a spingere.
+    if(madre==='ALLUMINIO'){
+      const selectedAntipanico=st.includes('antipanico');
+      const rowAntipanico=rt.includes('antipanico');
+      if(selectedAntipanico && rowAntipanico) return true;
+
+      const selectedEsterna=st.includes('apertura esterna') || st.includes('esterna') || st.includes('a spingere') || st.includes('spingere');
+      const rowEsterna=rt.includes('a spingere') || rt.includes('spingere') || rt.includes('apertura esterna') || rt.includes('esterna');
+      if(selectedEsterna && rowEsterna) return true;
+    }
+    return false;
+  }
+
   function rows(card){
     const c=ctx(card);
     if(!c.madre) return [];
     let list=(window.PW_ZIP_OPENINGS||[]).filter(r=>fam(r?.madre)===c.madre);
     if(c.serie) list=list.filter(r=>!r.serie?.length || r.serie.some(s=>norm(s)===c.serie));
-    if(c.tipo) list=list.filter(r=>!r.tipologia?.length || r.tipologia.some(t=>norm(t)===c.tipo));
+    if(c.tipo) list=list.filter(r=>!r.tipologia?.length || r.tipologia.some(t=>tipoCompatibile(t,c.tipo,c.madre)));
     const out=[], seen=new Set();
     for(const r of list){const k=norm(r.nome);if(!k||seen.has(k))continue;seen.add(k);out.push(r);} 
     return out;
   }
+
   function enforce(card){
     const sel=card?.querySelector('.apertura');
     if(!sel) return;
@@ -44,6 +65,7 @@
     if(rec?.immagine){sel.dataset.openingImage=rec.immagine;card.dataset.pwSummaryOpeningImage=rec.immagine;}
     sel.dataset.pwFamilyAuthority=c.madre;
   }
+
   function schedule(card){[0,50,120,250,500,900].forEach(ms=>setTimeout(()=>enforce(card),ms));}
   document.addEventListener('change',e=>{const card=e.target?.closest?.('.serramento');if(!card)return;if(e.target.matches('.madre,.serie,.tipologia,.apertura'))schedule(card);},true);
   const obs=new MutationObserver(ms=>{
