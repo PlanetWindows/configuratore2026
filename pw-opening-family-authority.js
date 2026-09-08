@@ -1,6 +1,6 @@
 (function(){
   'use strict';
-  const VERSION='2026-09-08-family-authority-2';
+  const VERSION='2026-09-08-family-authority-3';
   const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/sovraluce/g,'sopraluce').replace(/taverso|tarverso/g,'traverso').replace(/[^a-z0-9]+/g,' ').trim();
   const text=el=>el ? (el.options?.[el.selectedIndex]?.textContent || el.value || '') : '';
   const fam=v=>{const n=norm(v);if(n.includes('reverii'))return'REVERII';if(n.includes('alluminio'))return'ALLUMINIO';if(n.includes('pvc'))return'PVC';return'';};
@@ -13,21 +13,28 @@
     };
   }
 
-  function tipoCompatibile(rowTipo, selectedTipo, madre){
+  function tipoCompatibile(rowTipo, selectedTipo, madre, serie){
     const rt=norm(rowTipo);
     const st=norm(selectedTipo);
     if(rt===st) return true;
 
-    // Alias SOLO per ALLUMINIO / Planet Door 72.
-    // "Apertura esterna" nel configuratore corrisponde ai disegni del portoncino a spingere.
     if(madre==='ALLUMINIO'){
-      const selectedAntipanico=st.includes('antipanico');
-      const rowAntipanico=rt.includes('antipanico');
-      if(selectedAntipanico && rowAntipanico) return true;
+      const isDoor72=!serie || serie.includes('planet door 72') || serie.includes('door 72');
+      if(isDoor72){
+        // Nel Planet Door 72 la voce generica "Portoncino" deve comprendere
+        // portoncino interno + portoncino antipanico + apertura esterna/a spingere.
+        const selectedPortoncino = st==='portoncino' || st.includes('portoncino interno');
+        const rowDoorGroup = rt==='portoncino' || rt.includes('portoncino antipanico') || rt.includes('portoncino a spingere') || rt.includes('apertura esterna');
+        if(selectedPortoncino && rowDoorGroup) return true;
 
-      const selectedEsterna=st.includes('apertura esterna') || st.includes('esterna') || st.includes('a spingere') || st.includes('spingere');
-      const rowEsterna=rt.includes('a spingere') || rt.includes('spingere') || rt.includes('apertura esterna') || rt.includes('esterna');
-      if(selectedEsterna && rowEsterna) return true;
+        const selectedAntipanico=st.includes('antipanico');
+        const rowAntipanico=rt.includes('antipanico');
+        if(selectedAntipanico && rowAntipanico) return true;
+
+        const selectedEsterna=st.includes('apertura esterna') || st.includes('esterna') || st.includes('a spingere') || st.includes('spingere');
+        const rowEsterna=rt.includes('a spingere') || rt.includes('spingere') || rt.includes('apertura esterna') || rt.includes('esterna');
+        if(selectedEsterna && rowEsterna) return true;
+      }
     }
     return false;
   }
@@ -37,7 +44,7 @@
     if(!c.madre) return [];
     let list=(window.PW_ZIP_OPENINGS||[]).filter(r=>fam(r?.madre)===c.madre);
     if(c.serie) list=list.filter(r=>!r.serie?.length || r.serie.some(s=>norm(s)===c.serie));
-    if(c.tipo) list=list.filter(r=>!r.tipologia?.length || r.tipologia.some(t=>tipoCompatibile(t,c.tipo,c.madre)));
+    if(c.tipo) list=list.filter(r=>!r.tipologia?.length || r.tipologia.some(t=>tipoCompatibile(t,c.tipo,c.madre,c.serie)));
     const out=[], seen=new Set();
     for(const r of list){const k=norm(r.nome);if(!k||seen.has(k))continue;seen.add(k);out.push(r);} 
     return out;
