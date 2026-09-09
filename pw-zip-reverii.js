@@ -42,8 +42,6 @@
     ['Portoncino','39- Portoncino interno 2 ante asimmetriche','39-pi-2-ante-asimmetriche.webp'],
     ['Portoncino','40- Portoncino interno 2 ante con traverso','40-pi-2-con-traverso.webp'],
     ['Portoncino','41- Portoncino interno 2 ante con sopraluce','41-pi2-con-sovraluce.webp'],
-    ['Scorrevole Traslante','43- Scorrevole traslante 1 anta destra','43-traslante-a-dx.webp'],
-    ['Scorrevole Traslante','44- Scorrevole traslante 1 anta sinistra','44-traslante-a-sx.webp'],
     ['Portoncino a Spingere','45- Portoncino a spingere 1 anta destra','45-pe-1-dx.webp'],
     ['Portoncino a Spingere','46- Portoncino a spingere 1 anta sinistra','46-pe-1-sx.webp'],
     ['Portoncino a Spingere','47- Portoncino a spingere 1 anta con traverso','47-pe-1-con-traverso.webp'],
@@ -59,8 +57,10 @@
     ['Portoncino Antipanico','57- Portoncino antipanico 2 ante asimmetriche','57-pa-2-ante-asimmetriche.webp'],
     ['Portoncino Antipanico','58- Portoncino antipanico 2 ante con traverso','58-pa-2-con-traverso.webp']
   ];
+  const blocked=/(arco|trapezio|traslante|scorrevole)/i;
   window.PW_ZIP_OPENINGS=window.PW_ZIP_OPENINGS||[];
   for(const r of A){
+    if(blocked.test(String(r[0])+' '+String(r[1])))continue;
     const raw=r[2];
     const image=raw[0]==='@' ? (window.PW_ZIP_COLLISIONS||{})[raw.slice(1)] : raw;
     window.PW_ZIP_OPENINGS.push({madre:'REVERII',serie:['Reverii'],tipologia:[r[0]],nome:r[1],immagine:image});
