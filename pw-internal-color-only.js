@@ -2,9 +2,8 @@
 (function(){
 'use strict';
 
-const VERSION='2026-09-09-internal-color-1';
+const VERSION='2026-09-09-internal-color-2';
 const cache=new Map();
-const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 
 function colorEl(card){
   return card?.querySelector('.coloreInt,.colore-interno,.coloreInterno,[name*="colore_interno"],[name*="coloreInterno"],[class*="colore"][class*="intern"]');
@@ -37,13 +36,8 @@ function loadImage(src){
 function usableBase(src){return !!src&&!/^data:image\//i.test(src);}
 function baseImage(img){
   if(!img)return'';
-  const candidates=[
-    img.dataset.pwInternalColorBase,
-    img.dataset.originalSrc,
-    img.dataset.pwBaseSrc,
-    img.getAttribute('src')||''
-  ];
-  let base=candidates.find(usableBase)||candidates.find(Boolean)||'';
+  const candidates=[img.dataset.pwInternalColorBase,img.dataset.originalSrc,img.dataset.pwBaseSrc,img.getAttribute('src')||''];
+  const base=candidates.find(usableBase)||candidates.find(Boolean)||'';
   if(usableBase(base))img.dataset.pwInternalColorBase=base;
   return base;
 }
@@ -73,7 +67,7 @@ async function recolor(card){
   }
 
   const colorKey=selectedColor(ce);
-  const key=base+'|FRAMEONLY1|'+colorKey;
+  const key=base+'|FRAMEONLY2|'+colorKey;
   if(cache.has(key)){
     img.src=cache.get(key);
     img.dataset.pwInternalColorApplied=VERSION;
@@ -111,7 +105,7 @@ async function recolor(card){
   }
   if(!textureData&&!target)return;
 
-  /* Sfondo: considera sfondo soltanto il bianco collegato ai bordi dell'immagine. */
+  /* Sfondo: solo il bianco collegato ai bordi dell'immagine. */
   const background=new Uint8Array(total),queue=new Int32Array(total);let qh=0,qt=0;
   function pushBg(q){if(!background[q]){background[q]=1;queue[qt++]=q;}}
   for(let x=0;x<w;x++){
@@ -130,7 +124,7 @@ async function recolor(card){
     if(y<h-1){const z=a+w;if(!background[z]&&edgeWhite(p,z*4))pushBg(z);}
   }
 
-  /* Candidati profilo: esclude sfondo, vetro e trasparenze. */
+  /* Esclude sfondo, vetro e trasparenze. */
   const candidate=new Uint8Array(total);
   for(let q=0;q<total;q++){
     if(background[q])continue;
@@ -140,7 +134,8 @@ async function recolor(card){
     if((r+g+b)/3<=253)candidate[q]=1;
   }
 
-  /* Mantiene solo componenti grandi e continue: telaio, ante, piantoni e traversi. */
+  /* Colora solo elementi geometricamente compatibili con telaio, anta, montanti o traversi.
+     Elementi compatti centrali (cerchi, maniglie, simboli, dettagli) vengono esclusi. */
   const seen=new Uint8Array(total),stack=[],components=[],dirs=[-1,1,-w,w,-w-1,-w+1,w-1,w+1];
   for(let q=0;q<total;q++){
     if(!candidate[q]||seen[q])continue;
@@ -160,12 +155,17 @@ async function recolor(card){
     const longEnough=bw>=w*0.055||bh>=h*0.055;
     const thickEnough=Math.min(bw,bh)>=Math.max(2,Math.round(Math.min(w,h)*0.008));
     const bigEnough=area>=Math.max(45,Math.round(total*0.00045));
-    if(bigEnough&&longEnough&&thickEnough)components.push(pts);
+    const elongated=Math.max(bw,bh)/Math.max(1,Math.min(bw,bh))>=1.6;
+    const longSpan=bw>=w*0.18||bh>=h*0.18;
+    const largeFrame=bw>=w*0.45&&bh>=h*0.45;
+    if(bigEnough&&longEnough&&thickEnough&&(largeFrame||(elongated&&longSpan))){
+      components.push(pts);
+    }
   }
 
   let maxArea=0;
   for(const pts of components)if(pts.length>maxArea)maxArea=pts.length;
-  const chosen=components.filter(pts=>pts.length>=Math.max(45,maxArea*0.055));
+  const chosen=components.filter(pts=>pts.length>=Math.max(45,maxArea*0.035));
 
   for(const pts of chosen){
     for(const q of pts){
@@ -193,7 +193,7 @@ async function recolor(card){
 }
 
 function schedule(card){
-  [80,220,450,800].forEach(ms=>setTimeout(()=>recolor(card),ms));
+  [60,160,320,650,1100,1800].forEach(ms=>setTimeout(()=>recolor(card),ms));
 }
 
 document.addEventListener('change',e=>{
@@ -202,7 +202,8 @@ document.addEventListener('change',e=>{
   if(e.target===colorEl(card))schedule(card);
 },true);
 
-/* Se un altro modulo cambia l'immagine base, registra la nuova base senza cambiare l'apertura e riapplica solo il colore. */
+/* Se un altro modulo sostituisce l'immagine con la sua versione originale,
+   registra soltanto la nuova base e riapplica il colore. Non cambia l'apertura. */
 const observer=new MutationObserver(list=>{
   for(const m of list){
     if(m.type!=='attributes'||m.attributeName!=='src')continue;
@@ -210,10 +211,9 @@ const observer=new MutationObserver(list=>{
     if(!(img instanceof HTMLImageElement))continue;
     const card=img.closest('.serramento');if(!card||img!==getImg(card))continue;
     const src=img.getAttribute('src')||'';
-    if(usableBase(src)&&src!==img.dataset.pwInternalColorBase){
-      img.dataset.pwInternalColorBase=src;
-      if(selectedColor(colorEl(card)))setTimeout(()=>recolor(card),120);
-    }
+    if(!usableBase(src))continue;
+    if(src!==img.dataset.pwInternalColorBase)img.dataset.pwInternalColorBase=src;
+    if(selectedColor(colorEl(card)))schedule(card);
   }
 });
 observer.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['src']});
