@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const VERSION='2026-09-09-reverii-authority-3';
+const VERSION='2026-09-09-reverii-authority-4';
 const ASSET_BASE='https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
 const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/sovraluce/g,'sopraluce').replace(/taverso|tarverso/g,'traverso').replace(/[^a-z0-9]+/g,' ').trim();
 const text=el=>el?(el.options?.[el.selectedIndex]?.textContent||el.value||''):'';
@@ -58,22 +58,23 @@ const C={
  ['58- Portoncino antipanico 2 ante con traverso','pa-2-ante-con-traverso.webp']]
 };
 function src(raw){if(!raw)return'';if(raw.startsWith('@c'))return (window.PW_ZIP_COLLISIONS||{})[raw.slice(1)]||'';if(/^data:|^https?:/i.test(raw))return raw;return ASSET_BASE+raw;}
-function rows(card){const k=cat(card);return (C[k]||[]).map(([nome,raw])=>({madre:'REVERII',serie:['Reverii'],tipologia:[k],nome,immagine:src(raw),raw}));}
+function rows(card){const k=cat(card);return (C[k]||[]).filter(([nome])=>!/(arco|trapezio|traslante|scorrevole)/i.test(norm(nome))).map(([nome,raw])=>({madre:'REVERII',serie:['Reverii'],tipologia:[k],nome,immagine:src(raw),raw}));}
 function resolve(value,card){const q=norm(value);return rows(card).find(r=>norm(r.nome)===q)||null;}
-function removeRibaltaScorri(card){
+function removeUnsupportedReveriiTypes(card){
  if(!isReverii(card))return;
  const tipo=card.querySelector('.tipologia');if(!tipo)return;
+ const blocked=['ribalta','traslante','scorrevole','arco','trapezio'];
  let removedSelected=false;
- [...tipo.options].forEach(o=>{const n=norm(o.textContent||o.value);if(n.includes('ribalta')||n.includes('traslante')){if(o.selected)removedSelected=true;o.remove();}});
+ [...tipo.options].forEach(o=>{const n=norm(o.textContent||o.value);if(blocked.some(x=>n.includes(x))){if(o.selected)removedSelected=true;o.remove();}});
  if(removedSelected){tipo.value='';const ap=card.querySelector('.apertura');if(ap){ap.replaceChildren(new Option('Seleziona apertura',''));}delete card.dataset.pwSummaryOpeningImage;}
 }
 function forcePreview(card,rec){const img=card.querySelector('.opening-preview-box img');const ph=card.querySelector('.opening-placeholder');if(rec?.immagine){const u=rec.immagine;card.dataset.pwSummaryOpeningImage=u;const sel=card.querySelector('.apertura');if(sel)sel.dataset.openingImage=u;if(img){img.dataset.originalSrc=u;if(img.src!==u)img.src=u;img.alt=rec.nome;img.hidden=false;}if(ph)ph.hidden=true;}else{delete card.dataset.pwSummaryOpeningImage;const sel=card.querySelector('.apertura');if(sel)delete sel.dataset.openingImage;}}
 function patch(){
- const wrap=(name,kind)=>{const old=window[name];if(typeof old!=='function'||old.__pwReveriiV3)return;const fn=function(a,b){const card=kind==='available'?a:b;if(isReverii(card)){if(kind==='available')return rows(card);if(kind==='image')return resolve(a,card)?.immagine||'';return resolve(a,card);}return old.apply(this,arguments);};fn.__pwReveriiV3=true;window[name]=fn;};
+ const wrap=(name,kind)=>{const old=window[name];if(typeof old!=='function'||old.__pwReveriiV4)return;const fn=function(a,b){const card=kind==='available'?a:b;if(isReverii(card)){if(kind==='available')return rows(card);if(kind==='image')return resolve(a,card)?.immagine||'';return resolve(a,card);}return old.apply(this,arguments);};fn.__pwReveriiV4=true;window[name]=fn;};
  wrap('openingRecord','record');wrap('openingImage','image');wrap('availableOpenings','available');
 }
 function apply(card){
- if(!isReverii(card))return;removeRibaltaScorri(card);patch();const sel=card.querySelector('.apertura');if(!sel)return;const list=rows(card),old=norm(sel.value||text(sel));const wanted=['Seleziona apertura',...list.map(r=>r.nome)];const now=[...sel.options].map(o=>o.textContent||'');const same=now.length===wanted.length&&now.every((v,i)=>norm(v)===norm(wanted[i]));
+ if(!isReverii(card))return;removeUnsupportedReveriiTypes(card);patch();const sel=card.querySelector('.apertura');if(!sel)return;const list=rows(card),old=norm(sel.value||text(sel));const wanted=['Seleziona apertura',...list.map(r=>r.nome)];const now=[...sel.options].map(o=>o.textContent||'');const same=now.length===wanted.length&&now.every((v,i)=>norm(v)===norm(wanted[i]));
  if(!same){const f=document.createDocumentFragment();const ph=document.createElement('option');ph.value='';ph.textContent='Seleziona apertura';f.appendChild(ph);let keep='';for(const r of list){const o=document.createElement('option');o.value=r.nome;o.textContent=r.nome;o.dataset.openingImage=r.immagine;if(norm(r.nome)===old)keep=r.nome;f.appendChild(o);}sel.replaceChildren(f);sel.value=keep||'';}
  forcePreview(card,resolve(sel.value,card));sel.dataset.pwReveriiAuthority=VERSION;
 }
