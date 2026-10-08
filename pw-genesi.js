@@ -51,8 +51,12 @@
     img.hidden = false;
     const apply = src => {
       if (!isGenesi(card) || img.dataset.pwGenesiColorToken !== token) return;
-      if (img.getAttribute('src') !== src) img.src = src;
-      if (typeof window.renderNavigator === 'function') window.renderNavigator();
+      delete img.dataset.pwBaseSrc;
+      delete img.dataset.pwInternalColorBase;
+      if (img.getAttribute('src') !== src) {
+        img.src = src;
+        if (typeof window.renderNavigator === 'function') window.renderNavigator();
+      }
     };
     if (!color) { apply(opening.immagine); return; }
     if (rendered.has(token)) { apply(rendered.get(token)); return; }
@@ -97,7 +101,7 @@
       if (!select) continue;
       const color = isGenesi(card) ? colors.get(selected(card, cls)) : null;
       let preview = select.parentElement.querySelector('.pw-genesi-swatch');
-      if (!color) { if (preview) preview.hidden = true; continue; }
+      if (!color) { if (preview) { preview.hidden = true; preview.style.display = 'none'; } continue; }
       if (!preview) {
         preview = document.createElement('img'); preview.className = 'pw-genesi-swatch';
         preview.width = 56; preview.height = 30;
@@ -105,7 +109,7 @@
         select.parentElement.appendChild(preview);
       }
       if (preview.getAttribute('src') !== color.immagine) preview.src = color.immagine;
-      preview.alt = color.nome; preview.title = color.nome; preview.hidden = false;
+      preview.alt = color.nome; preview.title = color.nome; preview.hidden = false; preview.style.display = 'block';
     }
   }
   function refresh(card) {
