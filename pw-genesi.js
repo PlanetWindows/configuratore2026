@@ -3,6 +3,12 @@
   'use strict';
   const data = window.PW_GENESI_DATA;
   if (!data || !Array.isArray(data.aperture) || !Array.isArray(window.DATABASE_SERRAMENTI)) return;
+  data.madre = 'GENESI';
+  data.serie = 'GENESI';
+  for (const opening of data.aperture) {
+    opening.madre = data.madre;
+    opening.serie = [data.serie];
+  }
   const isGenesi = card => card?.querySelector('.madre')?.value === data.madre;
   const normalized = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const selected = (card, cls) => {
@@ -130,6 +136,15 @@
   }
   function init() {
     if (window.PW_GENESI_VERSION) return;
+    // Read older saved quotes that used the mixed-case family and series name.
+    for (const name of ['impostaSelect', 'impostaValoreSelect']) {
+      wrap(name, function (original, args) {
+        if (args[0]?.matches?.('.madre,.serie') && normalized(args[1]) === 'genesi') {
+          args[1] = args[0].matches('.madre') ? data.madre : data.serie;
+        }
+        return original.apply(this, args);
+      });
+    }
     wrap('availableOpenings', function (original, args) {
       return isGenesi(args[0]) ? rows(args[0]) : original.apply(this, args);
     });
