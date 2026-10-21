@@ -39,6 +39,10 @@
       const door72Old = 'Portoncino antipanico dx | Portoncino antipanico sx | Pontoncino antipanico dx con traverso | Portoncino antipanico 2 ante sx | Portoncino antipanico 2 ante asimmetriche o interno dx | Portoncino interno sx | Portoncino interno con tarverso | Portoncino interno con sopraluce | Portoncino interno con trapezio | Portoncino interno arco ribassato | Portoncino interno arco a tutto sesto | Portoncino interno fianco luce dx | Portoncino interno fianco luce sx | Portoncino interno con 2 ante sopraluce | Portoncino interno 2 ante traverso | Portoncino interno 2 ante arco ribassato | Portoncino interno 2 ante arco a tutto sesto';
       const door72New = 'Portoncino antipanico dx | Portoncino antipanico sx | Pontoncino antipanico dx con traverso | Portoncino antipanico 2 ante sx | Portoncino antipanico 2 ante asimmetriche | Portoncino interno dx | Portoncino interno sx | Portoncino interno con tarverso | Portoncino interno con sopraluce | Portoncino interno fianco luce dx | Portoncino interno fianco luce sx | Portoncino interno con 2 ante sopraluce | Portoncino interno 2 ante traverso';
       html = html.replace(door72Old, door72New);
+      html = html.replace(
+        '  select.appendChild(other);\n  select.disabled = false;',
+        '  if (!select.classList.contains("madre")) select.appendChild(other);\n  select.disabled = false;'
+      );
       const zipBase = 'https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
       const enhancementTag =
         '<style id="pw-field-label-alignment">@media screen{.serramento-grid>.field>label{min-height:2.6em;line-height:1.3}}</style>' +
