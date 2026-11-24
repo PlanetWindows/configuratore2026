@@ -6,7 +6,7 @@
   function hideConfigurationOpeningPreview(card){
     if(!card) return;
     const visual = card.querySelector('.opening-visual');
-    if(!visual || visual.hasAttribute('data-pvc-opening-image')) return;
+    if(!visual || visual.matches('[data-pvc-opening-image],[data-reverii-opening-image]')) return;
     visual.hidden = true;
     visual.style.display = 'none';
     visual.setAttribute('aria-hidden','true');

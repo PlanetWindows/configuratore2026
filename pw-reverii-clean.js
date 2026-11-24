@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const VERSION='2026-09-09-reverii-clean-1';
+const VERSION='2026-11-24-reverii-clean-2';
 const ASSET_BASE='https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
 const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/sovraluce/g,'sopraluce').replace(/taverso|tarverso/g,'traverso').replace(/[^a-z0-9]+/g,' ').trim();
 const text=el=>el?(el.options?.[el.selectedIndex]?.textContent||el.value||''):'';
@@ -8,38 +8,38 @@ const BLOCKED=['ribalta','arco','trapezio','traslante','scorrevole'];
 
 const DATA={
  finestra:[
-  ['1- Fisso','@c4'],
-  ['2- Fisso con traverso','2-fisso-con-traverso.webp'],
-  ['3- Fisso con piantone','@c5'],
-  ['4- Wasistas con cricchetto','4-wasistas-cricchetto.webp'],
-  ['5- Wasistas con cremonese','5-wasistas-cremonese.webp'],
-  ['6- Finestra 1 anta destra','@c6'],
-  ['7- Finestra 1 anta sinistra','@c7'],
-  ['8- Finestra 1 anta con sottoluce','8-f1-con-sottoluce.webp'],
-  ['9- Finestra 1 anta con sopraluce','9-f1-sovraluce.webp'],
-  ['10- Finestra 2 ante con piantone','10-f2-con-piantone.webp'],
-  ['11- Finestra 2 ante destra','11-f2-dx.webp'],
-  ['12- Finestra 2 ante sinistra','12-f2-sx.webp'],
-  ['13- Finestra 2 ante con sottoluce','13-f2-con-sottoluce.webp'],
-  ['14- Finestra 2 ante con sopraluce','14-f2-con-sovraluce.webp'],
-  ['15- Finestra 3 ante','15-f3.webp'],
-  ['16- Finestra 4 ante','16-f4.webp']
+  ['1- Fisso','assets/aperture/reverii/01.png'],
+  ['2- Fisso con traverso','assets/aperture/reverii/02.png'],
+  ['3- Fisso con piantone','assets/aperture/reverii/03.png'],
+  ['4- Wasistas con cricchetto','assets/aperture/reverii/04.png'],
+  ['5- Wasistas con cremonese','assets/aperture/reverii/05.png'],
+  ['6- Finestra 1 anta destra','assets/aperture/reverii/06.png'],
+  ['7- Finestra 1 anta sinistra','assets/aperture/reverii/07.png'],
+  ['8- Finestra 1 anta con sottoluce','assets/aperture/reverii/08.png'],
+  ['9- Finestra 1 anta con sopraluce','assets/aperture/reverii/09.png'],
+  ['10- Finestra 2 ante con piantone','assets/aperture/reverii/10.png'],
+  ['11- Finestra 2 ante destra','assets/aperture/reverii/11.png'],
+  ['12- Finestra 2 ante sinistra','assets/aperture/reverii/12.png'],
+  ['13- Finestra 2 ante con sottoluce','assets/aperture/reverii/13.png'],
+  ['14- Finestra 2 ante con sopraluce','assets/aperture/reverii/14.png'],
+  ['15- Finestra 3 ante','assets/aperture/reverii/15.png'],
+  ['16- Finestra 4 ante','assets/aperture/reverii/16.png']
  ],
  portafinestra:[
-  ['17- Portafinestra 1 anta destra','17-pf1-dx.webp'],
-  ['18- Portafinestra 1 anta sinistra','18-pf-1-sx.webp'],
-  ['19- Portafinestra 1 anta con sopraluce','19-pf1-sovraluce.webp'],
-  ['20- Portafinestra 1 anta con traverso','20-pf1-traverso.webp'],
-  ['21- Portafinestra 1 anta con telaio inferiore','21-pf-1-con-telaio-inf.webp'],
-  ['22- Portafinestra 1 anta con serratura','22-pf1-con-serratura.webp'],
-  ['23- Portafinestra 2 ante destra','23-pf2-dx.webp'],
-  ['24- Portafinestra 2 ante sinistra','24-pf2-sx.webp'],
-  ['25- Portafinestra 2 ante con sopraluce','25-pf-con-sovraluce.webp'],
-  ['26- Portafinestra 2 ante con traverso','26-pf2-con-traverso.webp'],
-  ['27- Portafinestra 2 ante con telaio inferiore','27-pf-2-con-telaio-inf.webp'],
-  ['28- Portafinestra 2 ante con serratura','28-pf2-con-serratura.webp'],
-  ['29- Portafinestra 3 ante','29-pf-3.webp'],
-  ['30- Portafinestra 4 ante','30-pf4.webp']
+  ['17- Portafinestra 1 anta destra','assets/aperture/reverii/17.png'],
+  ['18- Portafinestra 1 anta sinistra','assets/aperture/reverii/18.png'],
+  ['19- Portafinestra 1 anta con sopraluce','assets/aperture/reverii/19.png'],
+  ['20- Portafinestra 1 anta con traverso','assets/aperture/reverii/20.png'],
+  ['21- Portafinestra 1 anta con telaio inferiore','assets/aperture/reverii/21.png'],
+  ['22- Portafinestra 1 anta con serratura','assets/aperture/reverii/22.png'],
+  ['23- Portafinestra 2 ante destra','assets/aperture/reverii/23.png'],
+  ['24- Portafinestra 2 ante sinistra','assets/aperture/reverii/24.png'],
+  ['25- Portafinestra 2 ante con sopraluce','assets/aperture/reverii/25.png'],
+  ['26- Portafinestra 2 ante con traverso','assets/aperture/reverii/26.png'],
+  ['27- Portafinestra 2 ante con telaio inferiore','assets/aperture/reverii/27.png'],
+  ['28- Portafinestra 2 ante con serratura','assets/aperture/reverii/28.png'],
+  ['29- Portafinestra 3 ante','assets/aperture/reverii/29.png'],
+  ['30- Portafinestra 4 ante','assets/aperture/reverii/30.png']
  ],
  portoncino:[
   ['31- Portoncino interno 1 anta destra','31-pi1-dx.webp'],
@@ -55,22 +55,22 @@ const DATA={
   ['41- Portoncino interno 2 ante con sopraluce','41-pi2-con-sovraluce.webp']
  ],
  'portoncino a spingere':[
-  ['45- Portoncino a spingere 1 anta destra','45-pe-1-dx.webp'],
-  ['46- Portoncino a spingere 1 anta sinistra','46-pe-1-sx.webp'],
-  ['47- Portoncino a spingere 1 anta con traverso','47-pe-1-con-traverso.webp'],
-  ['48- Portoncino a spingere 2 ante destra','48-pe2-dx.webp'],
-  ['49- Portoncino a spingere 2 ante sinistra','49-pe-2-sx.webp'],
-  ['50- Portoncino a spingere 2 ante asimmetriche','50-pe2-ante-asimmetriche.webp'],
-  ['51- Portoncino a spingere 2 ante con traverso','51-pe2-con-traverso.webp']
+  ['45- Portoncino a spingere 1 anta destra','assets/aperture/reverii/45.png'],
+  ['46- Portoncino a spingere 1 anta sinistra','assets/aperture/reverii/46.png'],
+  ['47- Portoncino a spingere 1 anta con traverso','assets/aperture/reverii/47.png'],
+  ['48- Portoncino a spingere 2 ante destra','assets/aperture/reverii/48.png'],
+  ['49- Portoncino a spingere 2 ante sinistra','assets/aperture/reverii/49.png'],
+  ['50- Portoncino a spingere 2 ante asimmetriche','assets/aperture/reverii/50.png'],
+  ['51- Portoncino a spingere 2 ante con traverso','assets/aperture/reverii/51.png']
  ],
  'portoncino antipanico':[
-  ['52- Portoncino antipanico 1 anta destra','52-pa-dx.webp'],
-  ['53- Portoncino antipanico 1 anta sinistra','53-pa-sx.webp'],
-  ['54- Portoncino antipanico 1 anta con traverso','54-pa-con-traverso.webp'],
-  ['55- Portoncino antipanico 2 ante destra','55-pa-2-dx.webp'],
-  ['56- Portoncino antipanico 2 ante sinistra','56-pa-2-sx.webp'],
-  ['57- Portoncino antipanico 2 ante asimmetriche','57-pa-2-ante-asimmetriche.webp'],
-  ['58- Portoncino antipanico 2 ante con traverso','58-pa-2-con-traverso.webp']
+  ['52- Portoncino antipanico 1 anta destra','assets/aperture/reverii/52.png'],
+  ['53- Portoncino antipanico 1 anta sinistra','assets/aperture/reverii/53.png'],
+  ['54- Portoncino antipanico 1 anta con traverso','assets/aperture/reverii/54.png'],
+  ['55- Portoncino antipanico 2 ante destra','assets/aperture/reverii/55.png'],
+  ['56- Portoncino antipanico 2 ante sinistra','assets/aperture/reverii/56.png'],
+  ['57- Portoncino antipanico 2 ante asimmetriche','assets/aperture/reverii/57.png'],
+  ['58- Portoncino antipanico 2 ante con traverso','assets/aperture/reverii/58.png']
  ]
 };
 
@@ -88,6 +88,7 @@ function branchFromText(value){
 function branch(card){return branchFromText(text(card?.querySelector('.tipologia')));}
 function imageSrc(raw){
  if(!raw)return'';
+ if(raw.startsWith('assets/aperture/reverii/'))return new URL(raw,document.baseURI).href;
  if(raw.startsWith('@c'))return (window.PW_ZIP_COLLISIONS||{})[raw.slice(1)]||'';
  if(/^data:|^https?:/i.test(raw))return raw;
  return ASSET_BASE+raw;
@@ -97,6 +98,8 @@ function records(card){
  return (DATA[key]||[]).map(([nome,raw])=>({madre:'REVERII',serie:['Reverii'],tipologia:[key],nome,immagine:imageSrc(raw),raw}));
 }
 function resolve(value,card){const q=norm(value);return records(card).find(r=>norm(r.nome)===q)||null;}
+
+window.pwReveriiOpeningImage=(value,card)=>isReverii(card)?resolve(value,card)?.immagine||'':null;
 
 function cleanTipologie(card){
  if(!isReverii(card))return;
@@ -124,11 +127,25 @@ function setPreview(card,rec){
  const sel=card.querySelector('.apertura');
  const img=card.querySelector('.opening-preview-box img');
  const ph=card.querySelector('.opening-placeholder');
+ const visual=img?.closest('.opening-visual');
+ const showNew=Boolean(rec?.raw.startsWith('assets/aperture/reverii/'));
+ visual?.toggleAttribute('data-reverii-opening-image',showNew);
+ if(showNew&&visual){
+  visual.hidden=false;
+  visual.removeAttribute('aria-hidden');
+ }
  if(rec&&rec.immagine){
   const u=rec.immagine;
   card.dataset.pwSummaryOpeningImage=u;
   if(sel)sel.dataset.openingImage=u;
-  if(img){img.dataset.originalSrc=u;img.src=u;img.alt=rec.nome;img.hidden=false;}
+  if(img){
+   const changed=img.src!==u||img.hidden;
+   img.dataset.originalSrc=u;
+   if(changed)img.src=u;
+   img.alt=rec.nome;
+   img.hidden=false;
+   if(changed&&showNew)window.renderNavigator?.();
+  }
   if(ph)ph.hidden=true;
  }else{
   delete card.dataset.pwSummaryOpeningImage;
@@ -190,7 +207,11 @@ function apply(card){
 function schedule(card){[0,40,100,220,450,850,1400,2200].forEach(ms=>setTimeout(()=>apply(card),ms));}
 document.addEventListener('change',e=>{
  const card=e.target?.closest?.('.serramento');if(!card)return;
- if(e.target.matches('.madre')){if(isReverii(card))schedule(card);return;}
+ if(e.target.matches('.madre')){
+  if(isReverii(card))schedule(card);
+  else card.querySelector('.opening-visual[data-reverii-opening-image]')?.removeAttribute('data-reverii-opening-image');
+  return;
+ }
  if(!isReverii(card))return;
  if(e.target.matches('.serie,.tipologia,.apertura'))schedule(card);
 },true);

@@ -52,7 +52,7 @@ function glassPixel(r,g,b){
 }
 
 async function recolor(card){
-  if(!card||card.querySelector('.opening-visual[data-pvc-opening-image]'))return;
+  if(!card||card.querySelector('.opening-visual[data-pvc-opening-image],.opening-visual[data-reverii-opening-image]'))return;
   const img=getImg(card),ce=colorEl(card);
   if(!img||!ce||img.hidden)return;
 
@@ -186,7 +186,7 @@ async function recolor(card){
   const out=cv.toDataURL('image/webp',0.96);
   cache.set(key,out);
   if(img.dataset.pwInternalColorToken===token){
-    if(card.querySelector('.opening-visual[data-pvc-opening-image]'))return;
+    if(card.querySelector('.opening-visual[data-pvc-opening-image],.opening-visual[data-reverii-opening-image]'))return;
     img.src=out;
     img.dataset.pwInternalColorApplied=VERSION;
     if(typeof window.renderNavigator==='function')window.renderNavigator();

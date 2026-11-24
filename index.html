@@ -46,11 +46,12 @@
       const zipBase = 'https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
       const enhancementTag =
         '<style id="pw-field-label-alignment">@media screen{.serramento-grid>.field>label{min-height:2.6em;line-height:1.3}}</style>' +
-        '<style id="pw-hide-opening-preview">.serramento .opening-visual:not([data-pvc-opening-image]){display:none!important;visibility:hidden!important}.serramento .opening-visual[data-pvc-opening-image]{display:flex!important;visibility:visible!important}.opening-visual[data-pvc-opening-image] .opening-visual-copy{display:none}</style>' +
+        '<style id="pw-hide-opening-preview">.serramento .opening-visual:not([data-pvc-opening-image]):not([data-reverii-opening-image]){display:none!important;visibility:hidden!important}.serramento .opening-visual[data-pvc-opening-image]{display:flex!important;visibility:visible!important}.opening-visual[data-pvc-opening-image] .opening-visual-copy{display:none}</style>' +
         '<style id="pw-pvc-opening-fit">.opening-visual[data-pvc-opening-image] .opening-preview-box,.navigator-thumb:has(>img[src*="/assets/aperture/pvc/"]){position:relative}.opening-visual[data-pvc-opening-image] .opening-preview-box>img,.navigator-thumb>img[src*="/assets/aperture/pvc/"]{position:absolute;inset:4px;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;transform:none!important;min-width:0;min-height:0;object-fit:contain;object-position:center}</style>' +
+        '<style id="pw-reverii-opening-fit">.serramento .opening-visual[data-reverii-opening-image]{display:flex!important;visibility:visible!important}.opening-visual[data-reverii-opening-image] .opening-visual-copy{display:none}.opening-visual[data-reverii-opening-image] .opening-preview-box,.navigator-thumb:has(>img[src*="/assets/aperture/reverii/"]){position:relative}.opening-visual[data-reverii-opening-image] .opening-preview-box>img,.navigator-thumb>img[src*="/assets/aperture/reverii/"]{position:absolute;inset:4px;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;transform:none!important;min-width:0;min-height:0;object-fit:contain;object-position:center}</style>' +
         '<script src="pw-enhancements.js?v=20260907-4"></scr' + 'ipt>' +
-        '<script src="pw-category-color-fix.js?v=20261124-2"></scr' + 'ipt>' +
-        '<script src="pw-preview-visibility.js?v=20261124-1"></scr' + 'ipt>' +
+        '<script src="pw-category-color-fix.js?v=20261124-3"></scr' + 'ipt>' +
+        '<script src="pw-preview-visibility.js?v=20261124-3"></scr' + 'ipt>' +
         '<script src="pw-alluminio-assets-1.js?v=20260907-zip1"></scr' + 'ipt>' +
         '<script src="pw-alluminio-assets-2.js?v=20260907-zip1"></scr' + 'ipt>' +
         '<script src="pw-alluminio-assets-3.js?v=20260907-zip1"></scr' + 'ipt>' +
@@ -68,8 +69,8 @@
         '<script src="pw-family-summary-only.js?v=20260908-4"></scr' + 'ipt>' +
         '<script src="pw-opening-family-authority.js?v=20260908-5"></scr' + 'ipt>' +
         '<script src="pw-pvc-openings-authority.js?v=20261124-2"></scr' + 'ipt>' +
-        '<script src="pw-reverii-clean.js?v=20260909-1"></scr' + 'ipt>' +
-        '<script src="pw-internal-color-only.js?v=20261124-2"></scr' + 'ipt>';
+        '<script src="pw-reverii-clean.js?v=20261124-2"></scr' + 'ipt>' +
+        '<script src="pw-internal-color-only.js?v=20261124-3"></scr' + 'ipt>';
       html = html.replace(/<\/body>/i, enhancementTag + '</body>');
       document.open();document.write(html);document.close();
     })();
