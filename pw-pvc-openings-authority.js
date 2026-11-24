@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const VERSION='2026-11-24-pvc-authority-1';
+const VERSION='2026-11-24-pvc-authority-2';
 const ASSET_BASE='https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
 const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/sovraluce/g,'sopraluce').replace(/taverso|tarverso/g,'traverso').replace(/[^a-z0-9]+/g,' ').trim();
 const text=el=>el?(el.options?.[el.selectedIndex]?.textContent||el.value||''):'';
@@ -10,6 +10,25 @@ function belongs(r,cat){const n=norm(r.nome);switch(cat){case'FINESTRA':return n
 function rows(card){if(!isPVC(card))return[];const cat=category(card);if(!cat)return[];const all=(window.PW_ZIP_OPENINGS||[]).filter(r=>norm(r?.madre)==='pvc'&&belongs(r,cat));const out=[],seen=new Set();for(const r of all){const k=norm(r.nome);if(!k||seen.has(k))continue;seen.add(k);out.push(r);}return out;}
 function imageSrc(raw){if(!raw)return'';if(raw.startsWith('@c')){const key=raw.slice(1);return (window.PW_ZIP_COLLISIONS||{})[key]||'';}if(raw.startsWith('data:')||/^https?:/i.test(raw))return raw;return ASSET_BASE+raw.replace(/^\.\//,'');}
 function resolvePVC(value,card){if(!isPVC(card))return null;const q=norm(value);if(!q)return null;const rec=rows(card).find(r=>norm(r.nome)===q)||null;if(!rec)return null;return Object.assign({},rec,{immagine:imageSrc(rec.immagine)});}
+// The selected PVC profile is authoritative for every opening lookup.
+function installResolvers(){
+  const resolvers={
+    availableOpenings:card=>rows(card).map(record=>({...record,immagine:imageSrc(record.immagine)})),
+    openingRecord:resolvePVC,
+    openingImage:(value,card)=>resolvePVC(value,card)?.immagine||'',
+  };
+  for(const [name,resolve] of Object.entries(resolvers)){
+    const original=window[name];
+    if(typeof original!=='function'||original.pwPVC)continue;
+    const suppliedCard=name==='availableOpenings'?0:1;
+    const wrapped=function(...args){
+      return isPVC(args[suppliedCard])?resolve(...args):original.apply(this,args);
+    };
+    wrapped.pwPVC=true;
+    window[name]=wrapped;
+  }
+}
+window.pwPVCOpeningImage=(value,card)=>isPVC(card)?resolvePVC(value,card)?.immagine||'':null;
 function forcePreview(card,src,label){
   const box=card?.querySelector('.opening-preview-box');
   const visual=box?.closest('.opening-visual');
@@ -27,10 +46,15 @@ function forcePreview(card,src,label){
   if(title) title.textContent=label||'Seleziona un\'apertura';
   if(!img)return;
   if(src){
-    if(img.dataset.originalSrc!==src){
-      img.dataset.originalSrc=src;
-      img.src=src;
+    const openingChanged=img.dataset.originalSrc!==src;
+    if(openingChanged){
+      delete img.dataset.pwInternalColorBase;
+      delete img.dataset.pwInternalColorToken;
     }
+    img.dataset.originalSrc=src;
+    const needsNewSource=img.src!==src;
+    if(needsNewSource)img.src=src;
+    if((openingChanged||needsNewSource)&&visual?.hasAttribute('data-pvc-opening-image'))window.renderNavigator?.();
     img.alt=label||'';
     img.hidden=false;
     if(placeholder) placeholder.hidden=true;
@@ -46,6 +70,7 @@ function apply(card){
     card.querySelector('.opening-visual[data-pvc-opening-image]')?.removeAttribute('data-pvc-opening-image');
     return;
   }
+  installResolvers();
   const sel=card.querySelector('.apertura');if(!sel)return;
   const list=rows(card),old=norm(sel.value||text(sel));
   const desired=['Seleziona apertura',...list.map(r=>r.nome)],current=[...sel.options].map(o=>o.textContent||'');
@@ -60,8 +85,8 @@ function apply(card){
   sel.dataset.pwPvcAuthority=VERSION;
 }
 function schedule(card){[0,60,150,350,700,1200,2000,3200].forEach(ms=>setTimeout(()=>apply(card),ms));}
-document.addEventListener('change',e=>{const card=e.target?.closest?.('.serramento');if(!card)return;if(!isPVC(card)){apply(card);return;}if(e.target.matches('.madre,.serie,.tipologia,.apertura'))schedule(card);},true);
-function init(){document.querySelectorAll('.serramento').forEach(c=>{if(isPVC(c))schedule(c);});}
+document.addEventListener('change',e=>{const card=e.target?.closest?.('.serramento');if(!card)return;if(!isPVC(card)){apply(card);return;}if(e.target.matches('.madre,.serie,.tipologia,.apertura')){installResolvers();schedule(card);}},true);
+function init(){installResolvers();document.querySelectorAll('.serramento').forEach(c=>{if(isPVC(c))schedule(c);});}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 setTimeout(init,700);setTimeout(init,1800);
 setInterval(()=>{document.querySelectorAll('.serramento').forEach(c=>{if(isPVC(c))apply(c);});},250);
