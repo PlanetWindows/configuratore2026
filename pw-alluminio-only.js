@@ -48,6 +48,25 @@ function filterModal(c){if(!isAl(c))return;document.querySelectorAll('#openingMo
 let activeCard=null;
 document.addEventListener('click',e=>{const lib=e.target?.closest?.('.opening-library-btn');if(lib){activeCard=lib.closest('.serramento');if(activeCard&&isAl(activeCard))setTimeout(()=>filterModal(activeCard),30);return;}const choice=e.target?.closest?.('.opening-choice');if(choice&&activeCard&&isAl(activeCard)){setTimeout(()=>{const val=openingValue(activeCard).trim();activeCard.dataset.pwOpeningExplicit=val?'1':'0';showPreview(activeCard);},80);}},true);
 document.addEventListener('change',e=>{const c=e.target?.closest?.('.serramento');if(!c)return;if(!isAl(c)){if(e.target.matches?.('.madre'))c.querySelector('[data-alluminio-opening-image]')?.removeAttribute('data-alluminio-opening-image');return;}pruneBlocked(c);if(e.target.matches?.('.apertura,select[name*="apertura"]')){c.dataset.pwOpeningExplicit=openingValue(c).trim()?'1':'0';setTimeout(()=>showPreview(c),20);return;}if(e.target.matches?.('select,input')){const k=N((e.target.className||'')+' '+(e.target.name||'')+' '+(e.target.id||''));if(/profilo madre|material|serie|prodot|profil|tipolog|categoria|sistema/.test(k)){c.dataset.pwOpeningExplicit='0';hidePreview(c);setTimeout(()=>pruneBlocked(c),20);}}},true);
+// Keep the new aluminium drawing when an older preview or colour handler updates the image.
+const previewObserver=new MutationObserver(changes=>{
+ for(const change of changes){
+  const img=change.target;
+  if(!img.matches('.opening-preview-box img'))continue;
+  const card=img.closest('.serramento');
+  if(!isAl(card)||!card.querySelector('[data-alluminio-opening-image]'))continue;
+  const source=newImage(openingValue(card),card);
+  if(source&&img.src!==source)showPreview(card);
+ }
+});
+previewObserver.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['src']});
+const applyColour=window.applicaColoreAnteprima;
+if(typeof applyColour==='function'){
+ window.applicaColoreAnteprima=function(card){
+  if(newImage(openingValue(card),card))return;
+  return applyColour.apply(this,arguments);
+ };
+}
 const mo=new MutationObserver(()=>document.querySelectorAll('.serramento').forEach(c=>{if(isAl(c)){pruneBlocked(c);if(c.dataset.pwOpeningExplicit!=='1')hidePreview(c);}}));
 mo.observe(document.documentElement,{childList:true,subtree:true});
 function init(){document.querySelectorAll('.serramento').forEach(c=>{if(isAl(c)){pruneBlocked(c);c.dataset.pwOpeningExplicit=openingValue(c).trim()?'1':'0';showPreview(c);}})}
