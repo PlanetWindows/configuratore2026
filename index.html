@@ -63,9 +63,14 @@
         '<span class="navigator-thumb">${imageHtml}</span><span class="navigator-copy">',
         '${imageHtml}<span class="navigator-copy">'
       );
+      const companyDetails = html.match(/<div class="brand-copy">([\s\S]*?)<\/div>/);
+      if (companyDetails) {
+        html = html.replace(companyDetails[0], companyDetails[0] + '<h1 class="app-title">Configuratore serramenti</h1>');
+        html = html.replace('</footer>', '</footer><footer class="company-footer">' + companyDetails[1] + '</footer>');
+      }
       const zipBase = 'https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
       const enhancementTag =
-        '<link rel="stylesheet" href="pw-configurator-layout.css?v=20261125-2">' +
+        '<link rel="stylesheet" href="pw-configurator-layout.css?v=20261125-3">' +
         '<style id="pw-field-label-alignment">@media screen{.serramento-grid>.field>label{min-height:2.6em;line-height:1.3}}</style>' +
         '<style id="pw-hide-opening-preview">.serramento .opening-visual:not([data-pvc-opening-image]):not([data-reverii-opening-image]):not([data-alluminio-opening-image]){display:none!important;visibility:hidden!important}.serramento .opening-visual[data-pvc-opening-image]{display:flex!important;visibility:visible!important}.opening-visual[data-pvc-opening-image] .opening-visual-copy{display:none}</style>' +
         '<style id="pw-pvc-opening-fit">.opening-visual[data-pvc-opening-image] .opening-preview-box,.navigator-thumb:has(>img[src*="/assets/aperture/pvc/"]){position:relative}.opening-visual[data-pvc-opening-image] .opening-preview-box>img,.navigator-thumb>img[src*="/assets/aperture/pvc/"]{position:absolute;inset:4px;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;transform:none!important;min-width:0;min-height:0;object-fit:contain;object-position:center}</style>' +
