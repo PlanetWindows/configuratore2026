@@ -44,7 +44,7 @@
   }
 
   .configurator-shell {
-    grid-template-columns: clamp(220px, 22vw, 345px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) clamp(190px, 16vw, 245px);
     align-items: start;
     gap: 14px;
   }
@@ -69,6 +69,7 @@
   .navigator-search-wrap { padding: 8px 12px; }
   .items-navigator-list { max-height: none; overflow: visible; }
   .navigator-item { background: #faf9f6; }
+  .navigator-item:not(:has(.navigator-thumb)) { grid-template-columns: minmax(0, 1fr); }
   .navigator-item.active { box-shadow: none; }
   .navigator-copy span { white-space: normal; overflow-wrap: anywhere; }
   .detail-heading { padding: 0 0 12px; }
@@ -93,7 +94,7 @@
 
   @media (max-width: 1050px) {
     .workspace { grid-template-columns: 1fr; }
-    .configurator-shell { grid-template-columns: minmax(205px, 29%) minmax(0, 1fr); }
+    .configurator-shell { grid-template-columns: minmax(0, 1fr) minmax(185px, 25%); }
     .side-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
   }
 
