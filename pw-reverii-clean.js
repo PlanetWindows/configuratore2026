@@ -42,17 +42,17 @@ const DATA={
   ['30- Portafinestra 4 ante','assets/aperture/reverii/30.png']
  ],
  portoncino:[
-  ['31- Portoncino interno 1 anta destra','31-pi1-dx.webp'],
-  ['32- Portoncino interno 1 anta sinistra','32-pi1-sx.webp'],
-  ['33- Portoncino interno 1 anta con traverso','33-pi-1-con-traverso.webp'],
-  ['34- Portoncino interno 1 anta con fianco luce sinistro','34-pi-1-con-finaco-luce-sx.webp'],
-  ['35- Portoncino interno 1 anta con fianco luce destro','35-pi-1-con-finaco-luce-dx.webp'],
-  ['36- Portoncino interno 1 anta con sopraluce','36-pi-1-con-sovraluce.webp'],
-  ['37- Portoncino interno 2 ante destra','37-pi2-dx.webp'],
-  ['38- Portoncino interno 2 ante sinistra','38-pi2-sx.webp'],
-  ['39- Portoncino interno 2 ante asimmetriche','39-pi-2-ante-asimmetriche.webp'],
-  ['40- Portoncino interno 2 ante con traverso','40-pi-2-con-traverso.webp'],
-  ['41- Portoncino interno 2 ante con sopraluce','41-pi2-con-sovraluce.webp']
+  ['31- Portoncino interno 1 anta destra','assets/aperture/reverii/31.png'],
+  ['32- Portoncino interno 1 anta sinistra','assets/aperture/reverii/32.png'],
+  ['33- Portoncino interno 1 anta con traverso','assets/aperture/reverii/33.png'],
+  ['34- Portoncino interno 1 anta con fianco luce sinistro','assets/aperture/reverii/34.png'],
+  ['35- Portoncino interno 1 anta con fianco luce destro','assets/aperture/reverii/35.png'],
+  ['36- Portoncino interno 1 anta con sopraluce','assets/aperture/reverii/36.png'],
+  ['37- Portoncino interno 2 ante destra','assets/aperture/reverii/37.png'],
+  ['38- Portoncino interno 2 ante sinistra','assets/aperture/reverii/38.png'],
+  ['39- Portoncino interno 2 ante asimmetriche','assets/aperture/reverii/39.png'],
+  ['40- Portoncino interno 2 ante con traverso','assets/aperture/reverii/40.png'],
+  ['41- Portoncino interno 2 ante con sopraluce','assets/aperture/reverii/41.png']
  ],
  'portoncino a spingere':[
   ['45- Portoncino a spingere 1 anta destra','assets/aperture/reverii/45.png'],
