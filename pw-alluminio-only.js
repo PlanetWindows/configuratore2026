@@ -4,7 +4,16 @@ const N=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]
 const AS=()=>window.PW_ALLUMINIO_ZIP_ASSETS||{};
 const BLOCKED=/\barco\b|\btrapezio\b/;
 function cardText(c){const a=[];c?.querySelectorAll('select').forEach(s=>{const o=s.selectedOptions?.[0];a.push(o?.textContent||'',s.value||'')});c?.querySelectorAll('input:checked').forEach(i=>a.push(i.value||'',i.closest('label')?.textContent||''));return N(a.join(' | '));}
-function isAl(c){const t=cardText(c);return /\balluminio\b|planet 72|planet 82|planet door 72|planet door 82|planet panoramico|planet top slide|top slide|panoramico/.test(t);}
+function isAl(c){return N(c?.querySelector('.madre')?.value)==='alluminio';}
+function newImage(label,c){
+ if(!isAl(c))return null;
+ const norm=v=>N(v).replace(/sovraluce/g,'sopraluce').replace(/tarverso/g,'traverso');
+ const series=norm(c.querySelector('.serie')?.value);
+ const type=norm(c.querySelector('.tipologia')?.value);
+ const matches=(window.PW_ZIP_OPENINGS||[]).filter(r=>r.madre==='ALLUMINIO'&&r.immagine?.includes('/assets/aperture/alluminio/')&&r.serie.some(v=>norm(v)===series)&&norm(r.nome)===norm(label));
+ return (matches.find(r=>r.tipologia.some(v=>norm(v)===type))||matches[0])?.immagine||null;
+}
+window.pwNewAluminiumOpeningImage=newImage;
 function openingValue(c){const s=c?.querySelector('.apertura,select[name*="apertura"]');if(!s)return'';try{return typeof window.valoreSelect==='function'?(window.valoreSelect(s)||''):(s.value||'')}catch(e){return s.value||''}}
 function folderFor(c,label){const t=cardText(c),l=N(label||'');if(t.includes('top slide'))return'ALLUMINIO PLANET TOP SLIDE';if(t.includes('panoramico'))return'ALLUMINIO PLANET PANORAMICO';if(l.includes('antipanico')||t.includes('antipanico'))return'ALLUMINIO PORTONCINO ANTIPANICO';if(l.includes('spingere')||t.includes('spingere'))return'ALLUMINIO PORTONCINO A SPINGERE';if(l.includes('portoncino interno')||l.includes('porta interna')||t.includes('portoncino interno'))return'ALLUMINIO PORTONCINO INTERNO';if(t.includes('porta finestra')||t.includes('portafinestra'))return'ALLUMINIO PORTA FINESTRA';if(t.includes('portoncino')||t.includes('planet door'))return'ALLUMINIO PORTONCINO INTERNO';return'ALLUMINIO FINESTRA';}
 const ALIAS={
@@ -21,20 +30,26 @@ const ALIAS={
 'ALLUMINIO PORTONCINO INTERNO':{
 'portoncino interno dx':'pi 1 anta dx','portoncino interno sx':'pi 1 anta sx','pi 1 anta dx':'pi 1 anta dx','pi 1 anta sx':'pi 1 anta sx','portoncino interno con tarverso':'pi 1 anta con traverso','portoncino interno con traverso':'pi 1 anta con traverso','pi 1 anta con traverso':'pi 1 anta con traverso','portoncino interno con sopraluce':'pi 1 anta con sovraluce','portoncino interno con sovraluce':'pi 1 anta con sovraluce','pi 1 anta con sovraluce':'pi 1 anta con sovraluce','portoncino interno fianco luce dx':'pi 1 anta con fianco luce a dx','pi 1 anta con fianco luce a dx':'pi 1 anta con fianco luce a dx','portoncino interno fianco luce sx':'pi 1 anta con fiancoluce a sx','pi 1 anta con fiancoluce a sx':'pi 1 anta con fiancoluce a sx','portoncino interno con 2 ante sopraluce':'pi 2 ante con sovraluce','portoncino interno con 2 ante sovraluce':'pi 2 ante con sovraluce','pi 2 ante con sovraluce':'pi 2 ante con sovraluce','portoncino interno 2 ante traverso':'pi 2 ante con traverso','portoncino interno 2 ante con traverso':'pi 2 ante con traverso','pi 2 ante con traverso':'pi 2 ante con traverso','portoncino interno 2 ante dx':'pi 2 ante dx','portoncino interno 2 ante sx':'pi 2 ante sx','pi 2 ante dx':'pi 2 ante dx','pi 2 ante sx':'pi 2 ante sx','portoncino interno 2 ante asimmetriche':'pi con ante asimmetriche','portoncino interno con ante asimmetriche':'pi con ante asimmetriche','pi con ante asimmetriche':'pi con ante asimmetriche'}
 };
-function srcFor(label,c){if(!isAl(c)||!label)return'';const raw=N(label);if(BLOCKED.test(raw))return'';const folder=folderFor(c,label);const set=AS()[folder]||{};const key=ALIAS[folder]?.[raw]||raw;return set[key]||'';}
+function srcFor(label,c){if(!isAl(c)||!label)return'';const replacement=newImage(label,c);if(replacement)return replacement;const raw=N(label);if(BLOCKED.test(raw))return'';const folder=folderFor(c,label);const set=AS()[folder]||{};const key=ALIAS[folder]?.[raw]||raw;return set[key]||'';}
 window.pwAlluminioOpeningImage=srcFor;
 const previous=window.openingImage;
 window.openingImage=function(v,c){if(isAl(c))return srcFor(v,c);return typeof previous==='function'?previous(v,c):'';};
 window.openingImage.__pwAlluminioZipOnly=true;
-function hidePreview(c){const v=c?.querySelector('.opening-visual'),i=v?.querySelector('img'),p=v?.querySelector('.opening-placeholder');if(i){i.hidden=true;i.removeAttribute('src');i.removeAttribute('data-pw-base-src');}if(p)p.hidden=true;if(v){v.hidden=true;v.style.display='none';}}
-function showPreview(c){if(!isAl(c))return;const val=openingValue(c).trim();if(!val||c.dataset.pwOpeningExplicit!=='1'){hidePreview(c);return;}const src=srcFor(val,c);if(!src){hidePreview(c);return;}const v=c.querySelector('.opening-visual'),i=v?.querySelector('img'),p=v?.querySelector('.opening-placeholder');if(!v||!i)return;i.src=src;i.dataset.pwBaseSrc=src;i.hidden=false;v.hidden=false;v.style.display='';if(p)p.hidden=true;const s=c.querySelector('.apertura,select[name*="apertura"]');if(s)s.dataset.openingImage=src;}
+function hidePreview(c){const v=c?.querySelector('.opening-visual'),i=v?.querySelector('img'),p=v?.querySelector('.opening-placeholder');if(i){i.hidden=true;i.removeAttribute('src');i.removeAttribute('data-pw-base-src');}if(p)p.hidden=true;if(v){v.removeAttribute('data-alluminio-opening-image');v.hidden=true;v.style.display='none';}}
+function showPreview(c){if(!isAl(c))return;const val=openingValue(c).trim();if(!val||c.dataset.pwOpeningExplicit!=='1'){hidePreview(c);return;}const src=srcFor(val,c);if(!src){hidePreview(c);return;}const v=c.querySelector('.opening-visual'),i=v?.querySelector('img'),p=v?.querySelector('.opening-placeholder');if(!v||!i)return;const changed=i.src!==src||i.hidden||!v.hasAttribute('data-alluminio-opening-image');
+const isNew=src.includes('/assets/aperture/alluminio/');
+v.toggleAttribute('data-alluminio-opening-image',isNew);
+if(i.src!==src)i.src=src;
+i.alt=val;
+i.dataset.originalSrc=src;
+i.dataset.pwBaseSrc=src;i.hidden=false;v.hidden=false;v.style.display='';if(isNew)v.removeAttribute('aria-hidden');if(p)p.hidden=true;const s=c.querySelector('.apertura,select[name*="apertura"]');if(s)s.dataset.openingImage=src;if(changed&&isNew)window.renderNavigator?.();}
 function pruneBlocked(c){if(!isAl(c))return;c.querySelectorAll('select.apertura option,select[name*="apertura"] option').forEach(o=>{if(BLOCKED.test(N(o.textContent||o.value||'')))o.remove();});}
 function filterModal(c){if(!isAl(c))return;document.querySelectorAll('#openingModal .opening-choice').forEach(b=>{const label=b.querySelector('span')?.textContent||b.textContent||'';const src=srcFor(label,c);b.hidden=!src;b.style.display=src?'':'none';const im=b.querySelector('img');if(im&&src)im.src=src;});}
 let activeCard=null;
 document.addEventListener('click',e=>{const lib=e.target?.closest?.('.opening-library-btn');if(lib){activeCard=lib.closest('.serramento');if(activeCard&&isAl(activeCard))setTimeout(()=>filterModal(activeCard),30);return;}const choice=e.target?.closest?.('.opening-choice');if(choice&&activeCard&&isAl(activeCard)){setTimeout(()=>{const val=openingValue(activeCard).trim();activeCard.dataset.pwOpeningExplicit=val?'1':'0';showPreview(activeCard);},80);}},true);
-document.addEventListener('change',e=>{const c=e.target?.closest?.('.serramento');if(!c||!isAl(c))return;pruneBlocked(c);if(e.target.matches?.('.apertura,select[name*="apertura"]')){c.dataset.pwOpeningExplicit=openingValue(c).trim()?'1':'0';setTimeout(()=>showPreview(c),20);return;}if(e.target.matches?.('select,input')){const k=N((e.target.className||'')+' '+(e.target.name||'')+' '+(e.target.id||''));if(/profilo madre|material|serie|prodot|profil|tipolog|categoria|sistema/.test(k)){c.dataset.pwOpeningExplicit='0';hidePreview(c);setTimeout(()=>pruneBlocked(c),20);}}},true);
+document.addEventListener('change',e=>{const c=e.target?.closest?.('.serramento');if(!c)return;if(!isAl(c)){if(e.target.matches?.('.madre'))c.querySelector('[data-alluminio-opening-image]')?.removeAttribute('data-alluminio-opening-image');return;}pruneBlocked(c);if(e.target.matches?.('.apertura,select[name*="apertura"]')){c.dataset.pwOpeningExplicit=openingValue(c).trim()?'1':'0';setTimeout(()=>showPreview(c),20);return;}if(e.target.matches?.('select,input')){const k=N((e.target.className||'')+' '+(e.target.name||'')+' '+(e.target.id||''));if(/profilo madre|material|serie|prodot|profil|tipolog|categoria|sistema/.test(k)){c.dataset.pwOpeningExplicit='0';hidePreview(c);setTimeout(()=>pruneBlocked(c),20);}}},true);
 const mo=new MutationObserver(()=>document.querySelectorAll('.serramento').forEach(c=>{if(isAl(c)){pruneBlocked(c);if(c.dataset.pwOpeningExplicit!=='1')hidePreview(c);}}));
 mo.observe(document.documentElement,{childList:true,subtree:true});
-function init(){document.querySelectorAll('.serramento').forEach(c=>{if(isAl(c)){pruneBlocked(c);c.dataset.pwOpeningExplicit='0';hidePreview(c);}})}
+function init(){document.querySelectorAll('.serramento').forEach(c=>{if(isAl(c)){pruneBlocked(c);c.dataset.pwOpeningExplicit=openingValue(c).trim()?'1':'0';showPreview(c);}})}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();setTimeout(init,700);
 })();
