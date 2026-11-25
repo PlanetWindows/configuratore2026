@@ -1,0 +1,111 @@
+@media screen {
+  body {
+    padding: 0 0 24px;
+    background: #f6f4ef;
+  }
+
+  .app-header {
+    position: relative;
+    height: auto;
+    min-height: 68px;
+    margin: 0;
+    padding: 9px clamp(14px, 2vw, 32px);
+    gap: 14px;
+    background: #fff;
+    box-shadow: none;
+  }
+
+  .app-header::after { height: 2px; }
+  .brand-area { gap: 16px; }
+  .brand-logo { width: 200px; height: 42px; flex: 0 1 200px; }
+  .brand-copy { gap: 2px; padding-left: 16px; }
+  .brand-copy strong { font-size: 13px; }
+  .brand-copy span, .brand-copy a { font-size: 10px; }
+  .header-actions { flex-wrap: wrap; overflow: visible; }
+  .header-actions .header-btn { min-height: 36px; padding: 7px 10px; }
+  .header-actions #pdf, .header-actions #invia, .content-toolbar,
+  .side-panel .heading-icon, .side-panel .panel-heading p,
+  .navigator-head .eyebrow, .detail-hint { display: none; }
+
+  .workspace, .status-bar { width: min(1640px, calc(100% - 36px)); }
+  .workspace {
+    margin: 20px auto 12px;
+    grid-template-columns: clamp(205px, 19vw, 285px) minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  .content-panel {
+    min-width: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .configurator-shell {
+    grid-template-columns: clamp(220px, 22vw, 345px) minmax(0, 1fr);
+    align-items: start;
+    gap: 14px;
+  }
+
+  .side-panel, .items-navigator, .detail-workspace {
+    position: static;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid #e4ded3;
+    border-radius: 15px;
+    box-shadow: none;
+  }
+
+  .side-panel, .detail-workspace { padding: 16px; }
+  .side-panel .panel-heading { margin-bottom: 14px; }
+  .side-panel .panel-heading h2, .navigator-head h2 { font-size: 17px; margin: 0; }
+  .side-note textarea { min-height: 70px; max-height: 260px; }
+  .navigator-head { padding: 13px 14px; }
+  .navigator-count { background: #f2e9d8; color: #6c5126; }
+  .navigator-add { padding: 10px 12px 0; }
+  .navigator-add .primary-btn { width: 100%; min-height: 38px; padding: 7px 10px; box-shadow: none; }
+  .navigator-search-wrap { padding: 8px 12px; }
+  .items-navigator-list { max-height: none; overflow: visible; }
+  .navigator-item { background: #faf9f6; }
+  .navigator-item.active { box-shadow: none; }
+  .navigator-copy span { white-space: normal; overflow-wrap: anywhere; }
+  .detail-heading { padding: 0 0 12px; }
+  .detail-heading h2 { display: none; }
+  .detail-heading .eyebrow { font-size: 17px; color: var(--ink); letter-spacing: 0; text-transform: none; }
+  .serramento { box-shadow: none; }
+
+  .status-bar {
+    position: static;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 8px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .status-item { padding: 4px 8px; }
+  .footer-actions { flex-wrap: wrap; margin-left: auto; }
+  .footer-actions .footer-pdf { min-height: 36px; padding: 7px 12px; }
+
+  @media (max-width: 1050px) {
+    .workspace { grid-template-columns: 1fr; }
+    .configurator-shell { grid-template-columns: minmax(205px, 29%) minmax(0, 1fr); }
+    .side-fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  }
+
+  @media (max-width: 720px) {
+    .workspace, .status-bar { width: calc(100% - 20px); }
+    .configurator-shell { grid-template-columns: 1fr; }
+    .app-header { align-items: flex-start; }
+    .brand-logo { max-width: 100%; }
+    .brand-copy { display: none; }
+    .side-panel, .detail-workspace { padding: 12px; }
+    .side-fields { grid-template-columns: 1fr; }
+    .status-bar .status-item { min-width: 0; }
+    .footer-actions { width: 100%; margin: 0; }
+  }
+}
