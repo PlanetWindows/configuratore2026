@@ -75,9 +75,29 @@
           colorCatalog[0] + '<span class="detail-hint">'
         );
       }
+      html = html.replace(
+        '    const info = cardLabel(card, index);',
+        [
+          '    const info = cardLabel(card, index);',
+          '    const openingField = card.querySelector(".apertura")?.closest(".field");',
+          '    if (openingField) {',
+          '      let dimensions = openingField.querySelector(".opening-dimensions");',
+          '      if (!dimensions) {',
+          '        dimensions = document.createElement("small");',
+          '        dimensions.className = "opening-dimensions";',
+          '        openingField.append(dimensions);',
+          '      }',
+          '      const width = card.querySelector(".larghezza")?.value;',
+          '      const height = card.querySelector(".altezza")?.value;',
+          '      dimensions.hidden = !width && !height;',
+          '      const label = width || height ? "Dimensioni · " + (width || "—") + " × " + (height || "—") + " mm" : "";',
+          '      if (dimensions.textContent !== label) dimensions.textContent = label;',
+          '    }'
+        ].join('\n')
+      );
       const zipBase = 'https://cdn.jsdelivr.net/gh/PlanetWindows/configuratore2026@957b9d1ee15c2ebc49fca0b43f8b9e7448a8bd17/';
       const enhancementTag =
-        '<link rel="stylesheet" href="pw-configurator-layout.css?v=20261125-4">' +
+        '<link rel="stylesheet" href="pw-configurator-layout.css?v=20261125-5">' +
         '<style id="pw-field-label-alignment">@media screen{.serramento-grid>.field>label{min-height:2.6em;line-height:1.3}}</style>' +
         '<style id="pw-hide-opening-preview">.serramento .opening-visual:not([data-pvc-opening-image]):not([data-reverii-opening-image]):not([data-alluminio-opening-image]){display:none!important;visibility:hidden!important}.serramento .opening-visual[data-pvc-opening-image]{display:flex!important;visibility:visible!important}.opening-visual[data-pvc-opening-image] .opening-visual-copy{display:none}</style>' +
         '<style id="pw-pvc-opening-fit">.opening-visual[data-pvc-opening-image] .opening-preview-box,.navigator-thumb:has(>img[src*="/assets/aperture/pvc/"]){position:relative}.opening-visual[data-pvc-opening-image] .opening-preview-box>img,.navigator-thumb>img[src*="/assets/aperture/pvc/"]{position:absolute;inset:4px;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;transform:none!important;min-width:0;min-height:0;object-fit:contain;object-position:center}</style>' +

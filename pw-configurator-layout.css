@@ -60,7 +60,7 @@
 
   .side-panel, .detail-workspace { padding: 16px; }
   .side-panel .panel-heading { margin-bottom: 14px; }
-  .side-panel .panel-heading h2, .navigator-head h2 { font-size: 17px; margin: 0; }
+  .side-panel .panel-heading h2, .navigator-head h2 { font-size: 15px; margin: 0; }
   .side-note textarea { min-height: 70px; max-height: 260px; }
   .navigator-head { padding: 13px 14px; }
   .navigator-count { background: #f2e9d8; color: #6c5126; }
@@ -74,7 +74,7 @@
   .navigator-copy span { white-space: normal; overflow-wrap: anywhere; }
   .detail-heading { padding: 0 0 12px; }
   .detail-heading h2 { display: none; }
-  .detail-heading .eyebrow { font-size: 17px; color: #8b642b; letter-spacing: 0; text-transform: none; }
+  .detail-heading .eyebrow { font-size: 15px; color: #8b642b; letter-spacing: 0; text-transform: none; }
   .serramento { box-shadow: none; }
 
   .status-bar {
@@ -111,12 +111,12 @@
   }
 }
 
-.app-title, .company-footer { display: none; }
+.app-title, .company-footer, .opening-dimensions { display: none; }
 
 @media screen {
   body { background: #f5f6f7; }
   .app-header { border-bottom: 1px solid #e1e3e7; }
-  .app-header::after { left: clamp(14px, 2vw, 32px); width: 38px; background: var(--gold); }
+  .app-header::after { left: 0; right: 0; height: 1px; background: #cbb17b; }
   .app-header .brand-copy { display: none; }
   .app-title {
     display: block;
@@ -165,6 +165,17 @@
   .serramento.active-card .serramento-header { background: #fff; border-bottom-color: #e3e5e9; }
   .serramento-grid :is(select, input, textarea), .side-panel :is(input, textarea),
   .navigator-search-wrap input { border-color: #dfe2e6; background-color: #fff; }
+  .serramento-header h3 { font-size: 15px; }
+  .workspace :is(input, select, textarea) { font-size: 12px; }
+  .opening-dimensions:not([hidden]) {
+    display: block;
+    margin-top: 5px;
+    color: #8b642b;
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
   .company-footer {
     display: flex;
     flex-wrap: wrap;
